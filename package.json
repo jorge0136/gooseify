@@ -4,5 +4,11 @@
   "description": "Drop a goose into any webpage",
   "main": "index.js",
   "author": "Thomas George",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "^18.0.0"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1"
+  }
 }
