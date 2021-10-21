@@ -1,0 +1,8 @@
+{
+  "name": "gooseify",
+  "version": "0.0.1",
+  "description": "Drop a goose into any webpage",
+  "main": "index.js",
+  "author": "Thomas George",
+  "license": "MIT"
+}
