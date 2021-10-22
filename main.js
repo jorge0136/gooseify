@@ -3,7 +3,8 @@ import {
   window_scroll,
   window_size,
   get_key,
-  listener_add
+  listener_add,
+  has_focus
 } from './modules/browser_utilities.js';
 
 import {
@@ -47,21 +48,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	let direction = 0;
 	let bounds;
 
-	let focused = true;
 	let inited = false;
-
-	function has_focus () {
-		if(!focused || !goose) {
-			return false;
-		}
-
-		if(document.activeElement &&
-			document.activeElement.tagName.match(/^(INPUT|TEXTAREA)$/)) {
-			return false;
-		}
-
-		return true;
-	}
 
 	function gooseify () {
 		if(!document.createRange)
@@ -101,7 +88,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		}
 
 		listener_add(document, 'keydown', function (e) {
-			if(!has_focus()) { return; }
+			if(!has_focus(goose)) { return; }
 
 			let k = get_key(e);
 			keyHeld[k] = true;
@@ -112,7 +99,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		});
 
 		listener_add(document, 'keyup', function (e) {
-			if(!has_focus()) { return; }
+			if(!has_focus(goose)) { return; }
 
 			let k = get_key(e);
 			keyHeld[k] = false;
