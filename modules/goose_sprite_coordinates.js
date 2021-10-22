@@ -1,11 +1,13 @@
-	// [ w, h ]
+
+
+  // [ w, h ]
 	let restingSpriteSize = [ 28, 24 ]
 	let runningSpriteSize = [ 32, 19 ]
 	let preFlightSize = [ 26, 27 ]
 	let flyingSize = [ 26, 27 ]
 
 	// [x, y, w, h]
-	let gooseSpritePositions = [
+	const gooseSpriteCoordinates = [
 		// Resting
 		[ 0, 0 ].concat(restingSpriteSize),
 		[ 28,   0 ].concat(restingSpriteSize),
@@ -39,12 +41,17 @@
 
   const runLeft = [ 7,  8,  9, 10 ];
 	const runRight = [ 11, 12, 13, 14 ];
-	const run = [ runLeft, runRight];
+	const runningSpriteCoordinates = [ runLeft, runRight];
 
 	const preFlight = [ 15, 16 ];
 	const flyRight = [ 17, 18, 19, 20 ];
 	const flyLeft = [ 21, 22, 23, 24 ];
-	const ascend = [ preFlight.concat(flyRight), preFlight.concat(flyLeft) ];
-	const descend = [ flyRight, flyLeft ];
+	const ascendSpriteCoordinates = [ preFlight.concat(flyRight), preFlight.concat(flyLeft) ];
+	const descendSpriteCoordinates = [ flyRight, flyLeft ];
 
-  export { gooseSpritePositions, run, ascend, descend };
+export {
+  gooseSpriteCoordinates,
+  runningSpriteCoordinates,
+  ascendSpriteCoordinates,
+  descendSpriteCoordinates
+};
