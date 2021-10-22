@@ -1,3 +1,28 @@
+function listener_add (el, ev, cb) {
+  if (el.addEventListener)
+    el.addEventListener(ev, cb, false);
+  else
+    el.attachEvent('on' + ev, cb);
+}
+
+function get_key (ev) {
+  ev = ev ? ev : this.event;
+  return ev.keyCode ? ev.keyCode : ev.which;
+}
+
+	function has_focus () {
+		if(!focused || !goose) {
+			return false;
+		}
+
+		if(document.activeElement &&
+			document.activeElement.tagName.match(/^(INPUT|TEXTAREA)$/)) {
+			return false;
+		}
+
+		return true;
+	}
+
 function document_size () {
   return [
     document.documentElement.clientWidth,
@@ -49,4 +74,4 @@ function window_scroll () {
   return [x, y];
 }
 
-export { document_size, window_scroll, window_size };
+export { document_size, window_scroll, window_size, get_key, listener_add };

@@ -1,4 +1,11 @@
-import { document_size, window_scroll, window_size } from './modules/window_utilities.js';
+import {
+  document_size,
+  window_scroll,
+  window_size,
+  get_key,
+  listener_add
+} from './modules/browser_utilities.js';
+
 import {
   gooseSpriteCoordinates,
   runningSpriteCoordinates,
@@ -23,18 +30,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	 **/
 	let css_filter = '';
 
-	function listener_add (el, ev, cb) {
-		if (el.addEventListener)
-			el.addEventListener(ev, cb, false);
-		else
-			el.attachEvent('on' + ev, cb);
-	}
-
-	function get_key (ev) {
-		ev = ev ? ev : this.event;
-		return ev.keyCode ? ev.keyCode : ev.which;
-	}
-
 	// Global state
 	let DOMObjects = [];
 	let keyHeld = []; // auto set to false when key lifted
@@ -54,6 +49,19 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 	let focused = true;
 	let inited = false;
+
+	function has_focus () {
+		if(!focused || !goose) {
+			return false;
+		}
+
+		if(document.activeElement &&
+			document.activeElement.tagName.match(/^(INPUT|TEXTAREA)$/)) {
+			return false;
+		}
+
+		return true;
+	}
 
 	function gooseify () {
 		if(!document.createRange)
@@ -113,19 +121,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 				e.preventDefault();
 			}
 		});
-	}
-
-	function has_focus () {
-		if(!focused || !goose) {
-			return false;
-		}
-
-		if(document.activeElement &&
-			document.activeElement.tagName.match(/^(INPUT|TEXTAREA)$/)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	function update () {
