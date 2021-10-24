@@ -40,59 +40,46 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 	 * To generate other filters using HEX @link https://codepen.io/sosuke/pen/Pjoqqp
 	 * To generate other filters using rgb() @link https://stackoverflow.com/a/43960991
 	 **/
-  const css_filter = "";
-
-  // To double the size of the rendered image use 'scale(2.0)'
-  const css_transform = "scale(1.0)";
-
-  // Global state
-  let DOMObjectsDimensions = [];
-  let keyHeld = []; // auto set to false when key lifted
+  const CSS_FILTER = "";
+  const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
+  const MOVEMENT_SPEED = 4;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
   let goose;
+  let currentSpriteIndex = 0;
   let x = 0;
   let y = 0;
-  let astep = 0;
-  let stillStep = 0;
-  let currentSpriteIndex = 0;
-  let ascending = false;
-  let ascendHeight = 0;
-  let ascendState = -1;
-  let moveSpeed = 4;
   let direction = 0;
   let boundsWidth;
   let boundsHeight;
-
-  let inited = false;
+  let DOMObjectsDimensions = [];
+  let keyHeld = []; // auto set to false when key lifted
+  let step = 0;
+  let stationaryStep = 0;
+  let ascendHeight = 0;
+  let ascendState = -1;
 
   function gooseify () {
     if(!document.createRange)
       return; // :'(
 
-    if(!inited) {
-      init();
-    }
-
-    x = Math.floor(boundsWidth * 0.3);
-    y = 0;
+    init();
 
     goose = draw(goose, x, y, gooseSpriteCoordinates[0]);
     document.body.appendChild(goose);
   }
 
   function init () {
-    let i;
-
     initGooseCSS();
     setInterval(resize, 200);
     resize();
+    setInterval(update, 12);
 
-    for(i = 0; i < 255; i++) {
-      keyHeld[i] = false;
-    }
+    x = Math.floor(boundsWidth * 0.3);
+    y = 35;
 
+    keyHeld.fill(false);
     listener_add(document, "keydown", function (e) {
       if(!has_focus(goose)) { return; }
 
@@ -114,9 +101,6 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
         e.preventDefault();
       }
     });
-
-    setInterval(update, 12);
-    inited = true;
   }
 
   function resize () {
@@ -158,8 +142,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     goose.style.position = "absolute";
     goose.style.backgroundImage = "url(\"data:image/png;base64," + gooseSpriteBase64 +"\")";
     goose.style.backgroundRepeat = "no-repeat";
-    goose.style.filter = css_filter;
-    goose.style.transform = css_transform;
+    goose.style.filter = CSS_FILTER;
+    goose.style.transform = CSS_TRANSFORM;
     goose.className = "gooseify";
   }
 
@@ -176,8 +160,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   }
 
   function update () {
-    if(astep > 1000000)
-      astep = 0;
+    if(step > 1000000)
+      step = 0;
 
     let oldX = x;
     let oldY = y;
@@ -194,23 +178,22 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
         "height": spriteFrameHeight
       },
       DOMObjectsDimensions,
-      moveSpeed
+      MOVEMENT_SPEED
     );
 
     if(keyHeld[37]) {
-      x = left_arrow_transform(x, moveSpeed);
+      x = left_arrow_transform(x, MOVEMENT_SPEED);
     } else if(keyHeld[39]) {
-      x = right_arrow_transform(x, moveSpeed);
+      x = right_arrow_transform(x, MOVEMENT_SPEED);
     }
     x = handle_x_out_of_bounds(x, spriteFrameWidth, boundsWidth);
-    if(x != oldX) {
-      direction = determine_direction(x, oldX);
-    }
+
+    let ascending = (ascendHeight > -1);
 
     if(keyHeld[38] && !ascending && sitting) {
       up_arrow_transform();
     } else if(keyHeld[40] || (!ascending && !sitting && !gooseAtBottom)) {
-      y = down_arrow_transform(y, moveSpeed);
+      y = down_arrow_transform(y, MOVEMENT_SPEED);
     }
 
     if(ascending) { ascending_transform(); }
@@ -223,55 +206,57 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       return;
     }
 
-    astep++;
+    step++;
 
     if(ascending) {
       goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
+    if(x != oldX) {
+      direction = determine_direction(x, oldX);
+    }
+
     let descending = !ascending && !sitting;
     if(descending) {
-      currentSpriteIndex = descendSpriteCoordinates[direction][astep%2];
+      currentSpriteIndex = descendSpriteCoordinates[direction][step%2];
       goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
-    currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(astep / 2) % 4];
+    currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(step / 2) % 4];
 
     goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
   function up_arrow_transform() {
-    ascending = true;
     ascendHeight = 10;
     ascendState = -1;
   }
 
   function stationary_transform() {
-    if(stillStep <= 0) {
-      stillStep = Math.floor(Math.random() * 20) + 20;
-      astep = Math.floor(Math.random() * 100000);
+    if(stationaryStep <= 0) {
+      stationaryStep = Math.floor(Math.random() * 20) + 20;
+      step = Math.floor(Math.random() * 100000);
     }
-    stillStep--;
+    stationaryStep--;
 
-    currentSpriteIndex = astep % 7;
+    currentSpriteIndex = step % 7;
   }
 
   function ascending_transform() {
     ascendState++;
-    if(ascendState < ascendSpriteCoordinates[direction].length)
+    if(ascendState < ascendSpriteCoordinates[direction].length) {
       currentSpriteIndex = ascendSpriteCoordinates[direction][ascendState];
-    else
-      currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length-1];
-    y = y - ascendHeight;
+    }
+    else {
+      currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length - 1];
+    }
 
-    if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0)
-      y = gooseSpriteCoordinates[currentSpriteIndex][3];
+    y = y - ascendHeight;
+    y = handle_y_out_of_bounds (y, boundsHeight, gooseSpriteCoordinates[currentSpriteIndex][3]);
 
     ascendHeight--;
-    if(ascendHeight == -1)
-      ascending = false;
   }
 
   window.gooseify = gooseify;
