@@ -146,9 +146,9 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
   function init_bounds() {
     let bounds = document_size();
-    let w = window_size();
-    if(bounds[1] < w[1]) {
-      bounds[1] = w[1];
+    let window_height = window_size()[1];
+    if(bounds[1] < window_height) {
+      bounds[1] = window_height;
     }
     return bounds;
   }
@@ -184,7 +184,9 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex];
     const [ ,, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates;
 
-    let sitting = collide(
+    const gooseAtBottom =  (y + 2 > boundsHeight);
+
+    let sitting = gooseAtBottom || collide(
       {
         "top": y - spriteFrameH,
         "left": x,
@@ -194,13 +196,6 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       DOMObjectsDimensions,
       moveSpeed
     );
-
-    let cantDescend = false;
-
-    if(y + 2 > boundsHeight) {
-      sitting = true;
-      cantDescend = true;
-    }
 
     if(keyHeld[37]) {
       x = left_arrow_transform(x, moveSpeed);
@@ -214,7 +209,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     if(keyHeld[38] && !ascending && sitting) {
       up_arrow_transform();
-    } else if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
+    } else if(keyHeld[40] || (!ascending && !sitting && !gooseAtBottom)) {
       y = down_arrow_transform(y, moveSpeed);
     }
 

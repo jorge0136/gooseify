@@ -34,7 +34,8 @@ function get_key (ev) {
   return ev.keyCode ? ev.keyCode : ev.which;
 }
 
-//  TODO: Fix bug --  Clicking away from the browser seems to stickies the last pressed key.
+// TODO: There is a bug where if one presses a key and changes the focus out of the browser
+// the key is stickied "down".
 function has_focus (goose) {
   if (!document.hasFocus() || !goose) {
     return false;
@@ -47,7 +48,7 @@ function listener_add (el, ev, cb) {
   if (el.addEventListener)
     el.addEventListener(ev, cb, false);
   else
-    el.attachEvent('on' + ev, cb);
+    el.attachEvent("on" + ev, cb);
 }
 
 function window_scroll () {
@@ -79,7 +80,7 @@ function window_size () {
     wy = document.documentElement.clientHeight;
   }
   if (!wx) {
-    let body = document.body || document.getElementsByTagName('body')[0];
+    let body = document.body || document.getElementsByTagName("body")[0];
     if (body) {
       if (body.clientWidth) {
         wx = body.clientWidth;
