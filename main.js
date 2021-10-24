@@ -68,7 +68,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		x = Math.floor(boundsWidth * 0.3);
 		y = 0;
 
-		draw();
+		goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 		document.body.appendChild(goose);
 	}
 
@@ -119,15 +119,16 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		goose.className = 'gooseify';
   }
 
-	// Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
+  // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
 	// left, top, width, height, background-position
-  function draw () {
-    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteCoordinates[currentSpriteIndex]
+  function draw (goose, x, y, spriteFrameCoordinates) {
+    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = spriteFrameCoordinates
 		goose.style.top = (y - spriteFrameH) + 'px';
     goose.style.left = x + 'px';
     goose.style.width = spriteFrameW + 'px';
 		goose.style.height = spriteFrameH + 'px';
     goose.style.backgroundPosition = (-spriteFrameX) + 'px ' + (-spriteFrameY) + 'px';
+    return goose;
 	}
 
 	function update () {
@@ -188,26 +189,26 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		if(stationary) {
       stationary_transform()
-			draw();
+			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 			return;
 		}
 
 		astep++;
 
 		if(ascending) {
-			draw();
+			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 			return;
 		}
 
 		if(descending) {
 			currentSpriteIndex = descendSpriteCoordinates[direction][astep%2];
-			draw();
+			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 			return;
 		}
 
 		currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(astep / 2) % 4];
 
-		draw();
+		goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 	}
 
   function handle_x_out_of_bounds(spriteFrameW) {
