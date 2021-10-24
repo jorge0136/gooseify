@@ -166,11 +166,11 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
   // left, top, width, height, background-position
   function draw (goose, x, y, spriteFrameCoordinates) {
-    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = spriteFrameCoordinates;
-    goose.style.top = (y - spriteFrameH) + "px";
+    const [ spriteFrameX, spriteFrameY, spriteFrameWidth, spriteFrameHeight ] = spriteFrameCoordinates;
+    goose.style.top = (y - spriteFrameHeight) + "px";
     goose.style.left = x + "px";
-    goose.style.width = spriteFrameW + "px";
-    goose.style.height = spriteFrameH + "px";
+    goose.style.width = spriteFrameWidth + "px";
+    goose.style.height = spriteFrameHeight + "px";
     goose.style.backgroundPosition = (-spriteFrameX) + "px " + (-spriteFrameY) + "px";
     return goose;
   }
@@ -182,16 +182,16 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     let oldX = x;
     let oldY = y;
     let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex];
-    const [ ,, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates;
+    const [ ,, spriteFrameWidth, spriteFrameHeight ] = gooseSpriteFrameCoordinates;
 
     const gooseAtBottom =  (y + 2 > boundsHeight);
 
     let sitting = gooseAtBottom || collide(
       {
-        "top": y - spriteFrameH,
+        "top": y - spriteFrameHeight,
         "left": x,
-        "width": spriteFrameW,
-        "height": spriteFrameH
+        "width": spriteFrameWidth,
+        "height": spriteFrameHeight
       },
       DOMObjectsDimensions,
       moveSpeed
@@ -202,7 +202,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     } else if(keyHeld[39]) {
       x = right_arrow_transform(x, moveSpeed);
     }
-    x = handle_x_out_of_bounds(x, spriteFrameW, boundsWidth);
+    x = handle_x_out_of_bounds(x, spriteFrameWidth, boundsWidth);
     if(x != oldX) {
       direction = determine_direction(x, oldX);
     }
@@ -214,7 +214,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     }
 
     if(ascending) { ascending_transform(); }
-    y = handle_y_out_of_bounds(y, boundsHeight, spriteFrameH);
+    y = handle_y_out_of_bounds(y, boundsHeight, spriteFrameHeight);
 
     let stationary = (x == oldX && y == oldY);
     if(stationary) {
