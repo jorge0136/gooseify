@@ -1,10 +1,12 @@
 import {
+  all_text_nodes,
+  collide,
   document_size,
-  window_scroll,
-  window_size,
   get_key,
+  has_focus,
   listener_add,
-  has_focus
+  window_scroll,
+  window_size
 } from './modules/browser_utilities.js';
 
 import {
@@ -127,7 +129,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			'width':gooseSpriteCoordinates[currentSpriteIndex][2],
 			'height': gooseSpriteCoordinates[currentSpriteIndex][3]
 		};
-		let sitting = collide(gooseRect, DOMObjects);
+		let sitting = collide(gooseRect, DOMObjects, moveSpeed);
 		let cantDescend = false;
 
 		if(y + 2 > bounds[1]) {
@@ -226,23 +228,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		goose.style.backgroundPosition = (-spriteFrameX) + 'px ' + (-spriteFrameY) + 'px';
 	}
 
-	function collide (o, list) {
-		let i, l;
-		for(i = 0; i < list.length; i++) {
-			l = list[i];
-			if(o.top + o.height < l.top)
-				continue;
-			if(o.top + o.height > l.top + moveSpeed)
-				continue;
-			if(l.left > o.left + o.width)
-				continue;
-			if(l.left + l.width < o.left)
-				continue;
-			return true;
-		}
-		return false;
-	}
-
 	function resize () {
 		let body = document.body;
 
@@ -255,12 +240,13 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			range.selectNodeContents(e);
 			let rects = range.getClientRects();
 			let dimensions;
-			for(let i = 0; i < rects.length; i++) {
+      for (const rect of rects) {
+
 				dimensions = {
-					top: rects[i].top + scr[1],
-					left: rects[i].left,
-					width: rects[i].width,
-					height: rects[i].height
+					top: rect.top + scr[1],
+					left: rect.left,
+					width: rect.width,
+					height: rect.height
 				};
 				DOMObjects.push(dimensions);
 			}
@@ -270,15 +256,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		let w = window_size();
 		if(bounds[1] < w[1])
 			bounds[1] = w[1];
-	}
-
-	function all_text_nodes (element, cb) {
-		if(element.childNodes.length > 0)
-			for(let i = 0; i < element.childNodes.length; i++)
-				all_text_nodes(element.childNodes[i], cb);
-
-		if(element.nodeType == Node.TEXT_NODE && /\S/.test(element.nodeValue))
-			cb(element);
 	}
 
 	window.gooseify = gooseify;
