@@ -16,6 +16,13 @@ import {
   descendSpriteCoordinates
 } from './modules/goose_sprite_coordinates.js';
 
+import {
+  determine_direction,
+  handle_x_out_of_bounds,
+  handle_y_out_of_bounds,
+  down_arrow_transform
+} from './modules/goose_movements.js';
+
 import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 (function (){
@@ -110,6 +117,40 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		inited = true;
 	}
 
+  function resize () {
+
+		DOMObjectsDimensions = [];
+		all_text_nodes(document.body, function (e) {
+			let range = document.createRange();
+			range.selectNodeContents(e);
+			let rects = range.getClientRects();
+
+      for (const rect of rects) {
+				DOMObjectsDimensions.push({
+					top: rect.top + window_scroll()[1],
+					left: rect.left,
+					width: rect.width,
+					height: rect.height
+				});
+			}
+		});
+
+    let bounds = init_bounds();
+
+    boundsWidth = bounds[0];
+    boundsHeight = bounds[1];
+
+	}
+
+  function init_bounds() {
+    let bounds = document_size();
+    let w = window_size();
+    if(bounds[1] < w[1]) {
+      bounds[1] = w[1];
+    }
+    return bounds;
+  }
+
   function initGooseCSS () {
     goose = document.createElement('div');
 		goose.style.position = 'absolute';
@@ -161,7 +202,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		if(keyHeld[37]) { x = x - moveSpeed; } // left arrow: 37
 		if(keyHeld[39]) { x = x + moveSpeed; } // right arrow: 39
-    x = handle_x_out_of_bounds(x, spriteFrameW);
+    x = handle_x_out_of_bounds(x, spriteFrameW, boundsWidth);
     if(x != oldX) {
       direction = determine_direction(x, oldX);
     }
@@ -170,8 +211,9 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			up_arrow_transform()
 		}
 		if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
-      down_arrow_transform();
+      y = down_arrow_transform(y, moveSpeed);
     }
+    if(ascending) { ascending_transform() }
     y = handle_y_out_of_bounds(y, boundsHeight, spriteFrameH)
 
 		let stationary = (x == oldX && y == oldY);
@@ -184,7 +226,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		astep++;
 
 		if(ascending) {
-      ascending_transform()
 			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 			return;
 		}
@@ -200,30 +241,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 	}
-
-  function determine_direction(x, oldX) {
-    return (x > oldX) ? 0 : 1;
-  }
-
-  function handle_x_out_of_bounds(x, spriteFrameW) {
-    if(x < 0) {
-      x = 0;
-    } else if(x + spriteFrameW > boundsWidth){
-      x = boundsWidth - spriteFrameW;
-    }
-    return x;
-  }
-
-  function handle_y_out_of_bounds (y, boundsHeight, spriteFrameH) {
-    if(y + 1 > boundsHeight) {
-      y = boundsHeight - 1;
-    } else if(y - spriteFrameH < 0) {
-      y = spriteFrameH;
-    }
-    return y;
-  }
-
-  function down_arrow_transform() { y = y + moveSpeed;}
 
   function up_arrow_transform() {
     ascending = true;
@@ -256,40 +273,6 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
     if(ascendHeight == -1)
       ascending = false;
   }
-
-  function init_bounds() {
-    let bounds = document_size();
-    let w = window_size();
-    if(bounds[1] < w[1]) {
-      bounds[1] = w[1];
-    }
-    return bounds;
-  }
-
-	function resize () {
-
-		DOMObjectsDimensions = [];
-		all_text_nodes(document.body, function (e) {
-			let range = document.createRange();
-			range.selectNodeContents(e);
-			let rects = range.getClientRects();
-
-      for (const rect of rects) {
-				DOMObjectsDimensions.push({
-					top: rect.top + window_scroll()[1],
-					left: rect.left,
-					width: rect.width,
-					height: rect.height
-				});
-			}
-		});
-
-    let bounds = init_bounds();
-
-    boundsWidth = bounds[0];
-    boundsHeight = bounds[1];
-
-	}
 
 	window.gooseify = gooseify;
 })();
