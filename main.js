@@ -20,6 +20,8 @@ import {
   determine_direction,
   handle_x_out_of_bounds,
   handle_y_out_of_bounds,
+  left_arrow_transform,
+  right_arrow_transform,
   down_arrow_transform
 } from "./modules/goose_movements.js";
 
@@ -200,8 +202,11 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       cantDescend = true;
     }
 
-    if(keyHeld[37]) { x = x - moveSpeed; } // left arrow: 37
-    if(keyHeld[39]) { x = x + moveSpeed; } // right arrow: 39
+    if(keyHeld[37]) {
+      x = left_arrow_transform(x, moveSpeed);
+    } else if(keyHeld[39]) {
+      x = right_arrow_transform(x, moveSpeed);
+    }
     x = handle_x_out_of_bounds(x, spriteFrameW, boundsWidth);
     if(x != oldX) {
       direction = determine_direction(x, oldX);
@@ -209,10 +214,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     if(keyHeld[38] && !ascending && sitting) {
       up_arrow_transform();
-    }
-    if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
+    } else if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
       y = down_arrow_transform(y, moveSpeed);
     }
+
     if(ascending) { ascending_transform(); }
     y = handle_y_out_of_bounds(y, boundsHeight, spriteFrameH);
 
