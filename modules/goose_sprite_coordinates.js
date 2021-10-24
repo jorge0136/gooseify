@@ -1,10 +1,10 @@
 // Coordinates describing each keyframe of the animation within the sprite sheet
 
 // [ w, h ]
-let restingSpriteSize = [ 28, 24 ]
-let runningSpriteSize = [ 32, 19 ]
-let preFlightSize = [ 26, 27 ]
-let flyingSize = [ 26, 27 ]
+let restingSpriteSize = [ 28, 24 ];
+let runningSpriteSize = [ 32, 19 ];
+let preFlightSize = [ 26, 27 ];
+let flyingSize = [ 26, 27 ];
 
 // [x, y, w, h]
 const gooseSpriteCoordinates = [
