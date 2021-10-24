@@ -37,12 +37,13 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
   const css_transform = 'scale(1.0)';
 
 	// Global state
-	let DOMObjects = [];
+	let DOMObjectsDimensions = [];
 	let keyHeld = []; // auto set to false when key lifted
 
+  //  TODO: Continue to remove global state and make this more of a functional transform.
 	let goose;
-	let x = 100;
-	let y = 100;
+	let x = 0;
+	let y = 0;
 	let astep = 0;
 	let stillStep = 0;
 	let currentSpriteIndex = 0;
@@ -51,7 +52,8 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	let ascendState = -1;
 	let moveSpeed = 4;
 	let direction = 0;
-	let bounds;
+  let boundsWidth;
+  let boundsHeight;
 
 	let inited = false;
 
@@ -63,29 +65,17 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			init();
 		}
 
-		goose = document.createElement('div');
-		goose.style.position = 'absolute';
-		goose.style.backgroundImage = 'url("data:image/png;base64,' + gooseSpriteBase64 +'")';
-		goose.style.backgroundRepeat = 'no-repeat';
-		goose.style.filter = css_filter;
-    goose.style.transform = css_transform;
-		goose.className = 'gooseify';
-
-		x = Math.floor(bounds[0] * 0.3);
+		x = Math.floor(boundsWidth * 0.3);
 		y = 0;
 
 		draw();
 		document.body.appendChild(goose);
-
-		if(!inited) {
-			setInterval(update, 12);
-			inited = true;
-		}
 	}
 
 	function init () {
 		let i;
 
+    initGooseCSS();
 		setInterval(resize, 200);
 		resize();
 
@@ -114,6 +104,30 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 				e.preventDefault();
 			}
 		});
+
+    setInterval(update, 12);
+		inited = true;
+	}
+
+  function initGooseCSS () {
+    goose = document.createElement('div');
+		goose.style.position = 'absolute';
+		goose.style.backgroundImage = 'url("data:image/png;base64,' + gooseSpriteBase64 +'")';
+		goose.style.backgroundRepeat = 'no-repeat';
+		goose.style.filter = css_filter;
+    goose.style.transform = css_transform;
+		goose.className = 'gooseify';
+  }
+
+	// Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
+	// left, top, width, height, background-position
+  function draw () {
+    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteCoordinates[currentSpriteIndex]
+		goose.style.top = (y - spriteFrameH) + 'px';
+    goose.style.left = x + 'px';
+    goose.style.width = spriteFrameW + 'px';
+		goose.style.height = spriteFrameH + 'px';
+    goose.style.backgroundPosition = (-spriteFrameX) + 'px ' + (-spriteFrameY) + 'px';
 	}
 
 	function update () {
@@ -122,75 +136,58 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		let oldX = x;
 		let oldY = y;
+    let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex]
+    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates
 
-		let gooseRect = {
-			'top': y - gooseSpriteCoordinates[currentSpriteIndex][3],
-			'left': x,
-			'width':gooseSpriteCoordinates[currentSpriteIndex][2],
-			'height': gooseSpriteCoordinates[currentSpriteIndex][3]
-		};
-		let sitting = collide(gooseRect, DOMObjects, moveSpeed);
+		let sitting = collide(
+      {
+        'top': y - spriteFrameH,
+        'left': x,
+        'width': spriteFrameW,
+        'height': spriteFrameH
+      },
+      DOMObjectsDimensions,
+      moveSpeed
+    );
+
 		let cantDescend = false;
 
-		if(y + 2 > bounds[1]) {
+		if(y + 2 > boundsHeight) {
 			sitting = true;
 			cantDescend = true;
 		}
 
 		if(keyHeld[37]) { x = x - moveSpeed; } // left arrow: 37
 		if(keyHeld[39]) { x = x + moveSpeed; } // right arrow: 39
-		if(x < 0) { x = 0; }
-
-		if(x + gooseSpriteCoordinates[currentSpriteIndex][2] > bounds[0])
-			x = bounds[0] - gooseSpriteCoordinates[currentSpriteIndex][2];
+    handle_x_out_of_bounds(spriteFrameW);
 
 		// up arrow: 38
 		if(keyHeld[38] && !ascending && sitting) {
-			ascending = true;
-			ascendHeight = 10;
-			ascendState = -1;
+			up_arrow_transform()
 		}
 
 		// down arrow: 40
-		if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) { y = y + moveSpeed;}
+		if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
+      down_arrow_transform();
+    }
 
 		if(x != oldX) { direction = (x > oldX) ? 0 : 1; }
 
-		if(ascending) {
-			ascendState++;
-			if(ascendState < ascendSpriteCoordinates[direction].length)
-				currentSpriteIndex = ascendSpriteCoordinates[direction][ascendState];
-			else
-				currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length-1];
-			y = y - ascendHeight;
+		if(ascending) { ascending_transform() }
 
-			if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0)
-				y = gooseSpriteCoordinates[currentSpriteIndex][3];
-
-			ascendHeight--;
-			if(ascendHeight == -1)
-				ascending = false;
+		if(y + 1 > boundsHeight) {
+			y = boundsHeight - 1;
 		}
 
-		if(y + 1 > bounds[1]) {
-			y = bounds[1] - 1;
-		}
-
-		if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0) {
-			y = gooseSpriteCoordinates[currentSpriteIndex][3];
+		if(y - spriteFrameH < 0) {
+			y = spriteFrameH;
 		}
 
 		let stationary = x == oldX && y == oldY
 		let descending = !ascending && !sitting
 
 		if(stationary) {
-			if(stillStep <= 0) {
-				stillStep = Math.floor(Math.random() * 20) + 20;
-				astep = Math.floor(Math.random() * 100000);
-			}
-			stillStep--;
-
-			currentSpriteIndex = astep % 7;
+      stationary_transform()
 			draw();
 			return;
 		}
@@ -213,49 +210,80 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		draw();
 	}
 
-	// Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG.
-	// left, top, width, height, background-position
-	function draw () {
-		background(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-		goose.style.left = x+'px';
-		goose.style.top = (y - gooseSpriteCoordinates[currentSpriteIndex][3])+'px';
-	}
+  function handle_x_out_of_bounds(spriteFrameW) {
+    if(x < 0) { x = 0; }
 
-	function background (goose, gooseSpriteFrameCoordinates) {
-    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates
-		goose.style.width = spriteFrameW + 'px';
-		goose.style.height = spriteFrameH + 'px';
-		goose.style.backgroundPosition = (-spriteFrameX) + 'px ' + (-spriteFrameY) + 'px';
-	}
+    if(x + spriteFrameW > boundsWidth){
+      x = boundsWidth - spriteFrameW;
+    }
+  }
+
+  function down_arrow_transform() { y = y + moveSpeed;}
+
+  function up_arrow_transform() {
+    ascending = true;
+    ascendHeight = 10;
+    ascendState = -1;
+  }
+
+  function stationary_transform() {
+    if(stillStep <= 0) {
+      stillStep = Math.floor(Math.random() * 20) + 20;
+      astep = Math.floor(Math.random() * 100000);
+    }
+    stillStep--;
+
+    currentSpriteIndex = astep % 7;
+  }
+
+  function ascending_transform() {
+    ascendState++;
+    if(ascendState < ascendSpriteCoordinates[direction].length)
+      currentSpriteIndex = ascendSpriteCoordinates[direction][ascendState];
+    else
+      currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length-1];
+    y = y - ascendHeight;
+
+    if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0)
+      y = gooseSpriteCoordinates[currentSpriteIndex][3];
+
+    ascendHeight--;
+    if(ascendHeight == -1)
+      ascending = false;
+  }
+
+  function init_bounds() {
+    let bounds = document_size();
+    let w = window_size();
+    if(bounds[1] < w[1]) {
+      bounds[1] = w[1];
+    }
+    return bounds;
+  }
 
 	function resize () {
-		let body = document.body;
 
-		DOMObjects = [];
-
-		let scr = window_scroll();
-
-		all_text_nodes(body, function (e) {
+		DOMObjectsDimensions = [];
+		all_text_nodes(document.body, function (e) {
 			let range = document.createRange();
 			range.selectNodeContents(e);
 			let rects = range.getClientRects();
-			let dimensions;
-      for (const rect of rects) {
 
-				dimensions = {
-					top: rect.top + scr[1],
+      for (const rect of rects) {
+				DOMObjectsDimensions.push({
+					top: rect.top + window_scroll()[1],
 					left: rect.left,
 					width: rect.width,
 					height: rect.height
-				};
-				DOMObjects.push(dimensions);
+				});
 			}
 		});
 
-		bounds = document_size();
-		let w = window_size();
-		if(bounds[1] < w[1])
-			bounds[1] = w[1];
+    let bounds = init_bounds();
+
+    boundsWidth = bounds[0];
+    boundsHeight = bounds[1];
+
 	}
 
 	window.gooseify = gooseify;

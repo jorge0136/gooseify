@@ -7,15 +7,15 @@ function all_text_nodes (element, cb) {
     cb(element);
 }
 
-function collide (gooseRect, DOMObjects, moveSpeed) {
-  for (const DOMObject of DOMObjects) {
-    if(gooseRect.top + gooseRect.height < DOMObject.top)
+function collide (gooseRect, DOMObjectsDimensions, moveSpeed) {
+  for (const DOMObjectDimensions of DOMObjectsDimensions) {
+    if(gooseRect.top + gooseRect.height < DOMObjectDimensions.top)
       continue;
-    if(gooseRect.top + gooseRect.height > DOMObject.top + moveSpeed)
+    if(gooseRect.top + gooseRect.height > DOMObjectDimensions.top + moveSpeed)
       continue;
-    if(DOMObject.left > gooseRect.left + gooseRect.width)
+    if(DOMObjectDimensions.left > gooseRect.left + gooseRect.width)
       continue;
-    if(DOMObject.left + DOMObject.width < gooseRect.left)
+    if(DOMObjectDimensions.left + DOMObjectDimensions.width < gooseRect.left)
       continue;
     return true;
   }
@@ -28,7 +28,6 @@ function document_size () {
     document.documentElement.clientHeight
   ];
 }
-
 
 function get_key (ev) {
   ev = ev ? ev : this.event;
