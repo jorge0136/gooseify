@@ -9,9 +9,11 @@
     "jsdom": "^18.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.1.0",
     "jest": "^27.3.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint --fix --ext .js"
   }
 }
