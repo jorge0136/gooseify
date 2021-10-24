@@ -1,4 +1,4 @@
-function all_text_nodes (element, cb) {
+function all_text_nodes(element, cb) {
   if(element.childNodes.length > 0)
     for(let i = 0; i < element.childNodes.length; i++)
       all_text_nodes(element.childNodes[i], cb);
@@ -7,7 +7,7 @@ function all_text_nodes (element, cb) {
     cb(element);
 }
 
-function collide (gooseRect, DOMObjectsDimensions, moveSpeed) {
+function collide(gooseRect, DOMObjectsDimensions, moveSpeed) {
   for (const DOMObjectDimensions of DOMObjectsDimensions) {
     if(gooseRect.top + gooseRect.height < DOMObjectDimensions.top)
       continue;
@@ -22,21 +22,21 @@ function collide (gooseRect, DOMObjectsDimensions, moveSpeed) {
   return false;
 }
 
-function document_size () {
+function document_size() {
   return [
     document.documentElement.clientWidth,
     document.documentElement.clientHeight
   ];
 }
 
-function get_key (ev) {
+function get_key(ev) {
   ev = ev ? ev : this.event;
   return ev.keyCode ? ev.keyCode : ev.which;
 }
 
 // TODO: There is a bug where if one presses a key and changes the focus out of the browser
 // the key is stickied "down".
-function has_focus (goose) {
+function has_focus(goose) {
   if (!document.hasFocus() || !goose) {
     return false;
   } else {
@@ -44,14 +44,14 @@ function has_focus (goose) {
   }
 }
 
-function listener_add (el, ev, cb) {
+function listener_add(el, ev, cb) {
   if (el.addEventListener)
     el.addEventListener(ev, cb, false);
   else
     el.attachEvent("on" + ev, cb);
 }
 
-function window_scroll () {
+function window_scroll() {
   let x = 0;
   let y = 0;
 
@@ -69,7 +69,7 @@ function window_scroll () {
   return [x, y];
 }
 
-function window_size () {
+function window_size() {
   let wx, wy;
   if (window.innerWidth) {
     wx = window.innerWidth;

@@ -27,7 +27,7 @@ import {
 
 import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
-(function (){
+(function(){
   "use strict";
   /* eslint-env browser */
 
@@ -60,7 +60,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   let ascendHeight = 0;
   let ascendState = -1;
 
-  function gooseify () {
+  function gooseify() {
     if(!document.createRange)
       return; // :'(
 
@@ -70,7 +70,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     document.body.appendChild(goose);
   }
 
-  function init () {
+  function init() {
     initGooseCSS();
     setInterval(resize, 200);
     resize();
@@ -80,7 +80,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     y = 35;
 
     keyHeld.fill(false);
-    listener_add(document, "keydown", function (e) {
+    listener_add(document, "keydown", function(e) {
       if(!has_focus(goose)) { return; }
 
       let k = get_key(e);
@@ -91,7 +91,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       }
     });
 
-    listener_add(document, "keyup", function (e) {
+    listener_add(document, "keyup", function(e) {
       if(!has_focus(goose)) { return; }
 
       let k = get_key(e);
@@ -103,10 +103,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     });
   }
 
-  function resize () {
+  function resize() {
 
     DOMObjectsDimensions = [];
-    all_text_nodes(document.body, function (e) {
+    all_text_nodes(document.body, function(e) {
       let range = document.createRange();
       range.selectNodeContents(e);
       let rects = range.getClientRects();
@@ -137,7 +137,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     return bounds;
   }
 
-  function initGooseCSS () {
+  function initGooseCSS() {
     goose = document.createElement("div");
     goose.style.position = "absolute";
     goose.style.backgroundImage = "url(\"data:image/png;base64," + gooseSpriteBase64 +"\")";
@@ -149,7 +149,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
   // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
   // left, top, width, height, background-position
-  function draw (goose, x, y, spriteFrameCoordinates) {
+  function draw(goose, x, y, spriteFrameCoordinates) {
     const [ spriteFrameX, spriteFrameY, spriteFrameWidth, spriteFrameHeight ] = spriteFrameCoordinates;
     goose.style.top = (y - spriteFrameHeight) + "px";
     goose.style.left = x + "px";
@@ -159,7 +159,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     return goose;
   }
 
-  function update () {
+  function update() {
     if(step > 1000000)
       step = 0;
 

@@ -12,7 +12,7 @@ function handle_x_out_of_bounds(x, spriteFrameW, boundsWidth) {
   return x;
 }
 
-function handle_y_out_of_bounds (y, boundsHeight, spriteFrameH) {
+function handle_y_out_of_bounds(y, boundsHeight, spriteFrameH) {
   if(y + 1 > boundsHeight) {
     y = boundsHeight - 1;
   } else if(y - spriteFrameH < 0) {
