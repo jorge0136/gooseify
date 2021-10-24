@@ -34,6 +34,7 @@ function get_key (ev) {
   return ev.keyCode ? ev.keyCode : ev.which;
 }
 
+//  TODO: Fix bug --  Clicking away from the browser seems to stickies the last pressed key.
 function has_focus (goose) {
   if (!document.hasFocus() || !goose) {
     return false;

@@ -41,6 +41,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	let keyHeld = []; // auto set to false when key lifted
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
+  //  Ideally this would become a functional core with an imperative shell.
 	let goose;
 	let x = 0;
 	let y = 0;
@@ -68,7 +69,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		x = Math.floor(boundsWidth * 0.3);
 		y = 0;
 
-		goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
+		goose = draw(goose, x, y, gooseSpriteCoordinates[0]);
 		document.body.appendChild(goose);
 	}
 
@@ -137,8 +138,8 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		let oldX = x;
 		let oldY = y;
-    let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex]
-    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates
+    let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex];
+    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates;
 
 		let sitting = collide(
       {
@@ -160,33 +161,20 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 
 		if(keyHeld[37]) { x = x - moveSpeed; } // left arrow: 37
 		if(keyHeld[39]) { x = x + moveSpeed; } // right arrow: 39
-    handle_x_out_of_bounds(spriteFrameW);
+    x = handle_x_out_of_bounds(x, spriteFrameW);
+    if(x != oldX) {
+      direction = determine_direction(x, oldX);
+    }
 
-		// up arrow: 38
 		if(keyHeld[38] && !ascending && sitting) {
 			up_arrow_transform()
 		}
-
-		// down arrow: 40
 		if(keyHeld[40] || (!ascending && !sitting && !cantDescend)) {
       down_arrow_transform();
     }
+    y = handle_y_out_of_bounds(y, boundsHeight, spriteFrameH)
 
-		if(x != oldX) { direction = (x > oldX) ? 0 : 1; }
-
-		if(ascending) { ascending_transform() }
-
-		if(y + 1 > boundsHeight) {
-			y = boundsHeight - 1;
-		}
-
-		if(y - spriteFrameH < 0) {
-			y = spriteFrameH;
-		}
-
-		let stationary = x == oldX && y == oldY
-		let descending = !ascending && !sitting
-
+		let stationary = (x == oldX && y == oldY);
 		if(stationary) {
       stationary_transform()
 			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
@@ -196,10 +184,12 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		astep++;
 
 		if(ascending) {
+      ascending_transform()
 			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 			return;
 		}
 
+    let descending = !ascending && !sitting;
 		if(descending) {
 			currentSpriteIndex = descendSpriteCoordinates[direction][astep%2];
 			goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
@@ -211,12 +201,26 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
 	}
 
-  function handle_x_out_of_bounds(spriteFrameW) {
-    if(x < 0) { x = 0; }
+  function determine_direction(x, oldX) {
+    return (x > oldX) ? 0 : 1;
+  }
 
-    if(x + spriteFrameW > boundsWidth){
+  function handle_x_out_of_bounds(x, spriteFrameW) {
+    if(x < 0) {
+      x = 0;
+    } else if(x + spriteFrameW > boundsWidth){
       x = boundsWidth - spriteFrameW;
     }
+    return x;
+  }
+
+  function handle_y_out_of_bounds (y, boundsHeight, spriteFrameH) {
+    if(y + 1 > boundsHeight) {
+      y = boundsHeight - 1;
+    } else if(y - spriteFrameH < 0) {
+      y = spriteFrameH;
+    }
+    return y;
   }
 
   function down_arrow_transform() { y = y + moveSpeed;}
