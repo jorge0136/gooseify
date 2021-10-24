@@ -29,7 +29,10 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	 * To generate other filters using HEX @link https://codepen.io/sosuke/pen/Pjoqqp
 	 * To generate other filters using rgb() @link https://stackoverflow.com/a/43960991
 	 **/
-	let css_filter = '';
+	const css_filter = '';
+
+  // To double the size of the rendered image use 'scale(2.0)'
+  const css_transform = 'scale(1.0)';
 
 	// Global state
 	let DOMObjects = [];
@@ -40,7 +43,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	let y = 100;
 	let astep = 0;
 	let stillStep = 0;
-	let currentSpritePosition = 0;
+	let currentSpriteIndex = 0;
 	let ascending = false;
 	let ascendHeight = 0;
 	let ascendState = -1;
@@ -63,6 +66,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		goose.style.backgroundImage = 'url("data:image/png;base64,' + gooseSpriteBase64 +'")';
 		goose.style.backgroundRepeat = 'no-repeat';
 		goose.style.filter = css_filter;
+    goose.style.transform = css_transform;
 		goose.className = 'gooseify';
 
 		x = Math.floor(bounds[0] * 0.3);
@@ -118,10 +122,10 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		let oldY = y;
 
 		let gooseRect = {
-			'top': y - gooseSpriteCoordinates[currentSpritePosition][3],
+			'top': y - gooseSpriteCoordinates[currentSpriteIndex][3],
 			'left': x,
-			'width':gooseSpriteCoordinates[currentSpritePosition][2],
-			'height': gooseSpriteCoordinates[currentSpritePosition][3]
+			'width':gooseSpriteCoordinates[currentSpriteIndex][2],
+			'height': gooseSpriteCoordinates[currentSpriteIndex][3]
 		};
 		let sitting = collide(gooseRect, DOMObjects);
 		let cantDescend = false;
@@ -135,8 +139,8 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		if(keyHeld[39]) { x = x + moveSpeed; } // right arrow: 39
 		if(x < 0) { x = 0; }
 
-		if(x + gooseSpriteCoordinates[currentSpritePosition][2] > bounds[0])
-			x = bounds[0] - gooseSpriteCoordinates[currentSpritePosition][2];
+		if(x + gooseSpriteCoordinates[currentSpriteIndex][2] > bounds[0])
+			x = bounds[0] - gooseSpriteCoordinates[currentSpriteIndex][2];
 
 		// up arrow: 38
 		if(keyHeld[38] && !ascending && sitting) {
@@ -153,13 +157,13 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		if(ascending) {
 			ascendState++;
 			if(ascendState < ascendSpriteCoordinates[direction].length)
-				currentSpritePosition = ascendSpriteCoordinates[direction][ascendState];
+				currentSpriteIndex = ascendSpriteCoordinates[direction][ascendState];
 			else
-				currentSpritePosition = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length-1];
+				currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length-1];
 			y = y - ascendHeight;
 
-			if(y - gooseSpriteCoordinates[currentSpritePosition][3] < 0)
-				y = gooseSpriteCoordinates[currentSpritePosition][3];
+			if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0)
+				y = gooseSpriteCoordinates[currentSpriteIndex][3];
 
 			ascendHeight--;
 			if(ascendHeight == -1)
@@ -170,8 +174,8 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			y = bounds[1] - 1;
 		}
 
-		if(y - gooseSpriteCoordinates[currentSpritePosition][3] < 0) {
-			y = gooseSpriteCoordinates[currentSpritePosition][3];
+		if(y - gooseSpriteCoordinates[currentSpriteIndex][3] < 0) {
+			y = gooseSpriteCoordinates[currentSpriteIndex][3];
 		}
 
 		let stationary = x == oldX && y == oldY
@@ -184,7 +188,7 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 			}
 			stillStep--;
 
-			currentSpritePosition = astep % 7;
+			currentSpriteIndex = astep % 7;
 			draw();
 			return;
 		}
@@ -197,12 +201,12 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 		}
 
 		if(descending) {
-			currentSpritePosition = descendSpriteCoordinates[direction][astep%2];
+			currentSpriteIndex = descendSpriteCoordinates[direction][astep%2];
 			draw();
 			return;
 		}
 
-		currentSpritePosition = runningSpriteCoordinates[direction][Math.floor(astep / 2) % 4];
+		currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(astep / 2) % 4];
 
 		draw();
 	}
@@ -210,15 +214,16 @@ import { gooseSpriteBase64 } from './modules/goose_sprite.js';
 	// Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG.
 	// left, top, width, height, background-position
 	function draw () {
-		background(goose, gooseSpriteCoordinates[currentSpritePosition]);
+		background(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 		goose.style.left = x+'px';
-		goose.style.top = (y - gooseSpriteCoordinates[currentSpritePosition][3])+'px';
+		goose.style.top = (y - gooseSpriteCoordinates[currentSpriteIndex][3])+'px';
 	}
 
-	function background (goose, gooseSpriteState) {
-		goose.style.width = gooseSpriteState[2]+'px';
-		goose.style.height = gooseSpriteState[3]+'px';
-		goose.style.backgroundPosition = (-gooseSpriteState[0]) + 'px ' + (-gooseSpriteState[1]) + 'px';
+	function background (goose, gooseSpriteFrameCoordinates) {
+    const [ spriteFrameX, spriteFrameY, spriteFrameW, spriteFrameH ] = gooseSpriteFrameCoordinates
+		goose.style.width = spriteFrameW + 'px';
+		goose.style.height = spriteFrameH + 'px';
+		goose.style.backgroundPosition = (-spriteFrameX) + 'px ' + (-spriteFrameY) + 'px';
 	}
 
 	function collide (o, list) {
