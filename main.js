@@ -23,7 +23,8 @@ import {
   handle_y_out_of_bounds,
   left_arrow_transform,
   right_arrow_transform,
-  down_arrow_transform
+  down_arrow_transform,
+  up_arrow_transform
 } from "./modules/goose_movements.js";
 
 import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
@@ -44,19 +45,20 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   const CSS_FILTER = "";
   const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
   const MOVEMENT_SPEED = 3;
+  const JUMP_HEIGHT = 11;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
-  let goose = {
+  let _goose = {
     x: 0,
-    y: 0
+    y: 0,
   };
   let currentSpriteIndex = 0;
   let step = 0;
   let stationaryStep = 0;
   let ascend = {
     height: 0,
-    state: -1,
+    spriteIndex: -1,
     active: function() {
       return this.height > -1;
     }
@@ -75,22 +77,22 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     init();
 
-    goose = draw(goose, gooseSpriteCoordinates[0]);
-    document.body.appendChild(goose);
+    _goose = draw(_goose, gooseSpriteCoordinates[0]);
+    document.body.appendChild(_goose);
   }
 
   function init() {
-    initGooseCSS();
+    _goose = style_goose(_goose);
     setInterval(resize, 200);
     resize();
-    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions); }, 12);
+    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, 25);
 
-    goose.x = Math.floor(_bounds.width * 0.3);
-    goose.y = 35;
+    _goose.x = Math.floor(_bounds.width * 0.3);
+    _goose.y = 0;
 
     _keyHeld.fill(false);
     listener_add(document, "keydown", function(e) {
-      if(!has_focus(goose)) { return; }
+      if(!has_focus(_goose)) { return; }
 
       let k = get_key(e);
       _keyHeld[k] = true;
@@ -101,7 +103,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     });
 
     listener_add(document, "keyup", function(e) {
-      if(!has_focus(goose)) { return; }
+      if(!has_focus(_goose)) { return; }
 
       let k = get_key(e);
       _keyHeld[k] = false;
@@ -145,7 +147,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     };
   }
 
-  function initGooseCSS() {
+  function style_goose(goose) {
     goose = document.createElement("div");
     goose.style.position = "absolute";
     goose.style.backgroundImage = "url(\"data:image/png;base64," + gooseSpriteBase64 +"\")";
@@ -153,6 +155,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     goose.style.filter = CSS_FILTER;
     goose.style.transform = CSS_TRANSFORM;
     goose.className = "gooseify";
+    return goose;
   }
 
   // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
@@ -167,7 +170,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     return goose;
   }
 
-  function update(bounds, keyHeld, DOMObjectsDimensions) {
+  function update(bounds, keyHeld, DOMObjectsDimensions, goose) {
     if(step > 1000000)
       step = 0;
 
@@ -197,14 +200,15 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     goose.x = handle_x_out_of_bounds(goose.x, spriteFrameWidth, bounds.width);
 
     if(keyHeld[38] && !ascend.active() && sitting) {
-      ascend = up_arrow_transform(ascend);
+      ascend = up_arrow_transform(ascend, JUMP_HEIGHT);
     } else if(keyHeld[40] || (!ascend.active() && !sitting && !gooseAtBottom)) {
       goose.y = down_arrow_transform(goose.y, MOVEMENT_SPEED);
     }
 
     let direction = determine_direction(goose.x, oldX);
-    if(ascend.active()) { ascending_transform(bounds, direction); }
-    goose.y = handle_y_out_of_bounds(goose.y, bounds.height, spriteFrameHeight);
+    if(ascend.active()) {
+      goose = ascending_transform(bounds, direction, goose, spriteFrameHeight);
+    }
 
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
@@ -229,18 +233,15 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(step / 2) % 4];
 
-    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-  }
-
-  function up_arrow_transform(ascend) {
-    ascend.height = 10;
-    ascend.state = -1;
-    return ascend;
+    _goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
   function stationary_transform() {
+    const stationary_pause_length = 20;
+
+    // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
     if(stationaryStep <= 0) {
-      stationaryStep = Math.floor(Math.random() * 20) + 20;
+      stationaryStep = Math.floor(Math.random() * stationary_pause_length) + stationary_pause_length;
       step = Math.floor(Math.random() * 100000);
     }
     stationaryStep--;
@@ -248,10 +249,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     currentSpriteIndex = step % stationarySpriteCoordinates.length;
   }
 
-  function ascending_transform(bounds, direction) {
-    ascend.state++;
-    if(ascend.state < ascendSpriteCoordinates[direction].length) {
-      currentSpriteIndex = ascendSpriteCoordinates[direction][ascend.state];
+  function ascending_transform(bounds, direction, goose) {
+    ascend.spriteIndex++;
+    if(ascend.spriteIndex < ascendSpriteCoordinates[direction].length) {
+      currentSpriteIndex = ascendSpriteCoordinates[direction][ascend.spriteIndex];
     }
     else {
       currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length - 1];
@@ -261,6 +262,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     goose.y = handle_y_out_of_bounds(goose.y, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
 
     ascend.height--;
+    return goose;
   }
 
   window.gooseify = gooseify;

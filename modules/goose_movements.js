@@ -28,7 +28,14 @@ function left_arrow_transform(x, moveSpeed) {
 function right_arrow_transform(x, moveSpeed) {
   return x + moveSpeed;
 }
+
 function down_arrow_transform(y, moveSpeed) { return y + moveSpeed; }
+
+function up_arrow_transform(ascend, jump_height) {
+  ascend.height = jump_height;
+  ascend.spriteIndex = -1;
+  return ascend;
+}
 
 export {
   determine_direction,
@@ -36,5 +43,6 @@ export {
   handle_y_out_of_bounds,
   left_arrow_transform,
   right_arrow_transform,
-  down_arrow_transform
+  down_arrow_transform,
+  up_arrow_transform
 };
