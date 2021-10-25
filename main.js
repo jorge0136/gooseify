@@ -27,7 +27,7 @@ import {
 
 import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
-(function(){
+(() => {
   "use strict";
   /* eslint-env browser */
 
