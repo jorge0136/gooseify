@@ -47,10 +47,11 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
-  let goose;
+  let goose = {
+    x: 0,
+    y: 0
+  };
   let currentSpriteIndex = 0;
-  let x = 0;
-  let y = 0;
   let step = 0;
   let stationaryStep = 0;
   let ascend = {
@@ -74,7 +75,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     init();
 
-    goose = draw(goose, x, y, gooseSpriteCoordinates[0]);
+    goose = draw(goose, gooseSpriteCoordinates[0]);
     document.body.appendChild(goose);
   }
 
@@ -84,8 +85,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     resize();
     setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions); }, 12);
 
-    x = Math.floor(_bounds.width * 0.3);
-    y = 35;
+    goose.x = Math.floor(_bounds.width * 0.3);
+    goose.y = 35;
 
     _keyHeld.fill(false);
     listener_add(document, "keydown", function(e) {
@@ -156,10 +157,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
   // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
   // left, top, width, height, background-position
-  function draw(goose, x, y, spriteFrameCoordinates) {
+  function draw(goose, spriteFrameCoordinates) {
     const [ spriteFrameX, spriteFrameY, spriteFrameWidth, spriteFrameHeight ] = spriteFrameCoordinates;
-    goose.style.top = (y - spriteFrameHeight) + "px";
-    goose.style.left = x + "px";
+    goose.style.top = (goose.y - spriteFrameHeight) + "px";
+    goose.style.left = goose.x + "px";
     goose.style.width = spriteFrameWidth + "px";
     goose.style.height = spriteFrameHeight + "px";
     goose.style.backgroundPosition = (-spriteFrameX) + "px " + (-spriteFrameY) + "px";
@@ -170,17 +171,17 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     if(step > 1000000)
       step = 0;
 
-    let oldX = x;
-    let oldY = y;
+    let oldX = goose.x;
+    let oldY = goose.y;
     let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex];
     const [ ,, spriteFrameWidth, spriteFrameHeight ] = gooseSpriteFrameCoordinates;
 
-    const gooseAtBottom =  (y + 2 > bounds.height);
+    const gooseAtBottom =  (goose.y + 2 > bounds.height);
 
     let sitting = gooseAtBottom || collide(
       {
-        "top": y - spriteFrameHeight,
-        "left": x,
+        "top": goose.y - spriteFrameHeight,
+        "left": goose.x,
         "width": spriteFrameWidth,
         "height": spriteFrameHeight
       },
@@ -189,46 +190,46 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     );
 
     if(keyHeld[37]) {
-      x = left_arrow_transform(x, MOVEMENT_SPEED);
+      goose.x = left_arrow_transform(goose.x, MOVEMENT_SPEED);
     } else if(keyHeld[39]) {
-      x = right_arrow_transform(x, MOVEMENT_SPEED);
+      goose.x = right_arrow_transform(goose.x, MOVEMENT_SPEED);
     }
-    x = handle_x_out_of_bounds(x, spriteFrameWidth, bounds.width);
+    goose.x = handle_x_out_of_bounds(goose.x, spriteFrameWidth, bounds.width);
 
     if(keyHeld[38] && !ascend.active() && sitting) {
       ascend = up_arrow_transform(ascend);
     } else if(keyHeld[40] || (!ascend.active() && !sitting && !gooseAtBottom)) {
-      y = down_arrow_transform(y, MOVEMENT_SPEED);
+      goose.y = down_arrow_transform(goose.y, MOVEMENT_SPEED);
     }
 
-    let direction = determine_direction(x, oldX);
+    let direction = determine_direction(goose.x, oldX);
     if(ascend.active()) { ascending_transform(bounds, direction); }
-    y = handle_y_out_of_bounds(y, bounds.height, spriteFrameHeight);
+    goose.y = handle_y_out_of_bounds(goose.y, bounds.height, spriteFrameHeight);
 
-    let stationary = (x == oldX && y == oldY);
+    let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
       stationary_transform();
-      goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
     step++;
 
     if(ascend.active()) {
-      goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
     let descending = !ascend.active() && !sitting;
     if(descending) {
       currentSpriteIndex = descendSpriteCoordinates[direction][step%2];
-      goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
     currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(step / 2) % 4];
 
-    goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
+    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
   function up_arrow_transform(ascend) {
@@ -256,8 +257,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length - 1];
     }
 
-    y = y - ascend.height;
-    y = handle_y_out_of_bounds (y, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
+    goose.y = goose.y - ascend.height;
+    goose.y = handle_y_out_of_bounds(goose.y, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
 
     ascend.height--;
   }
