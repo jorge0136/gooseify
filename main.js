@@ -46,6 +46,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
   const MOVEMENT_SPEED = 3;
   const JUMP_HEIGHT = 11;
+  const UPDATE_INTERVAL = 12;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
@@ -85,7 +86,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     _goose = style_goose(_goose);
     setInterval(resize, 200);
     resize();
-    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, 25);
+    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
 
     _goose.x = Math.floor(_bounds.width * 0.3);
     _goose.y = 0;

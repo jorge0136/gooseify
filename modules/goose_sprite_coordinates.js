@@ -39,7 +39,7 @@ const gooseSpriteCoordinates = [
 ];
 
 const stationaryFrameCount = 6;
-const stationarySpriteCoordinates = range(0, stationaryFrameCount - 1); // Adjust range for zero indexing
+const stationarySpriteCoordinates = range(0, stationaryFrameCount - 1);
 
 const runDirectionFrameCount = 4;
 const runLeft = range(6, runDirectionFrameCount);
@@ -50,8 +50,9 @@ const preFlightFrameCount = 2;
 const preFlight = range(14, preFlightFrameCount);
 
 const flyDirectionFrameCount = 4;
-const flyRight = range(16, flyDirectionFrameCount);
-const flyLeft = range(20, flyDirectionFrameCount - 1); // Adjust range for zero indexing
+const flyRight = range(16, flyDirectionFrameCount - 1);
+//  TODO: Need to add sprites for preFlight left. Right now preflight is always right.
+const flyLeft = range(20, flyDirectionFrameCount - 1);
 
 const ascendSpriteCoordinates = [ preFlight.concat(flyRight), preFlight.concat(flyLeft) ];
 const descendSpriteCoordinates = [ flyRight, flyLeft ];
