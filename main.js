@@ -11,6 +11,7 @@ import {
 
 import {
   gooseSpriteCoordinates,
+  stationarySpriteCoordinates,
   runningSpriteCoordinates,
   ascendSpriteCoordinates,
   descendSpriteCoordinates
@@ -42,7 +43,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 	 **/
   const CSS_FILTER = "";
   const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
-  const MOVEMENT_SPEED = 4;
+  const MOVEMENT_SPEED = 3;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
@@ -243,7 +244,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     }
     stationaryStep--;
 
-    currentSpriteIndex = step % 7;
+    currentSpriteIndex = step % stationarySpriteCoordinates.length;
   }
 
   function ascending_transform(bounds, direction) {
