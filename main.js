@@ -50,13 +50,6 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   let currentSpriteIndex = 0;
   let x = 0;
   let y = 0;
-  let direction = 0;
-  let _bounds = {
-    height: 0,
-    width: 0
-  };
-  let DOMObjectsDimensions = [];
-  let keyHeld = []; // auto set to false when key lifted
   let step = 0;
   let stationaryStep = 0;
   let ascend = {
@@ -66,6 +59,13 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       return this.height > -1;
     }
   };
+
+  let _bounds = {
+    height: 0,
+    width: 0
+  };
+  let _keyHeld = [];
+  let _DOMObjectsDimensions = [];
 
   function gooseify() {
     if(!document.createRange)
@@ -81,17 +81,17 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     initGooseCSS();
     setInterval(resize, 200);
     resize();
-    setInterval(() => { update(_bounds); }, 12);
+    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions); }, 12);
 
     x = Math.floor(_bounds.width * 0.3);
     y = 35;
 
-    keyHeld.fill(false);
+    _keyHeld.fill(false);
     listener_add(document, "keydown", function(e) {
       if(!has_focus(goose)) { return; }
 
       let k = get_key(e);
-      keyHeld[k] = true;
+      _keyHeld[k] = true;
 
       if(k >= 37 && k <= 40) {
         e.preventDefault();
@@ -102,7 +102,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       if(!has_focus(goose)) { return; }
 
       let k = get_key(e);
-      keyHeld[k] = false;
+      _keyHeld[k] = false;
 
       if(k >= 37 && k <= 40) {
         e.preventDefault();
@@ -112,14 +112,14 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
   function resize() {
 
-    DOMObjectsDimensions = [];
+    _DOMObjectsDimensions = [];
     all_text_nodes(document.body, function(e) {
       let range = document.createRange();
       range.selectNodeContents(e);
       let rects = range.getClientRects();
 
       for (const rect of rects) {
-        DOMObjectsDimensions.push({
+        _DOMObjectsDimensions.push({
           top: rect.top + window_scroll()[1],
           left: rect.left,
           width: rect.width,
@@ -165,7 +165,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     return goose;
   }
 
-  function update(bounds) {
+  function update(bounds, keyHeld, DOMObjectsDimensions) {
     if(step > 1000000)
       step = 0;
 
@@ -200,7 +200,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       y = down_arrow_transform(y, MOVEMENT_SPEED);
     }
 
-    if(ascend.active()) { ascending_transform(bounds); }
+    let direction = determine_direction(x, oldX);
+    if(ascend.active()) { ascending_transform(bounds, direction); }
     y = handle_y_out_of_bounds(y, bounds.height, spriteFrameHeight);
 
     let stationary = (x == oldX && y == oldY);
@@ -215,10 +216,6 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     if(ascend.active()) {
       goose = draw(goose, x, y, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
-    }
-
-    if(x != oldX) {
-      direction = determine_direction(x, oldX);
     }
 
     let descending = !ascend.active() && !sitting;
@@ -249,7 +246,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     currentSpriteIndex = step % 7;
   }
 
-  function ascending_transform(bounds) {
+  function ascending_transform(bounds, direction) {
     ascend.state++;
     if(ascend.state < ascendSpriteCoordinates[direction].length) {
       currentSpriteIndex = ascendSpriteCoordinates[direction][ascend.state];
