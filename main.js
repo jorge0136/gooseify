@@ -1,12 +1,10 @@
 import {
-  all_text_nodes,
   collide,
-  document_size,
   get_key,
   has_focus,
-  listener_add,
-  window_scroll,
-  window_size
+  init_bounds,
+  initDOMObjectsDimensions,
+  listener_add
 } from "./modules/browser_utilities.js";
 
 import {
@@ -27,23 +25,12 @@ import {
   ascendSpriteIndex
 } from "./modules/goose_movements.js";
 
-import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
+import { style_goose, draw } from "./modules/goose_sprite.js";
 
 (() => {
   "use strict";
   /* eslint-env browser */
 
-  /**
-	 * CSS Filter to be applied to the loaded goose atlas
-	 *
-	 * Red  (#FF0000): invert(16%) sepia(99%) saturate(7451%) hue-rotate(8deg) brightness(103%) contrast(117%)
-	 * Green(#00FF00): invert(52%) sepia(47%) saturate(1999%) hue-rotate(79deg) brightness(115%) contrast(126%)
-	 * Blue (#0000FF): invert(8%) sepia(99%) saturate(7376%) hue-rotate(247deg) brightness(99%) contrast(144%)
-	 * To generate other filters using HEX @link https://codepen.io/sosuke/pen/Pjoqqp
-	 * To generate other filters using rgb() @link https://stackoverflow.com/a/43960991
-	 **/
-  const CSS_FILTER = "";
-  const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
   const MOVEMENT_SPEED = 3;
   const JUMP_HEIGHT = 11;
   const UPDATE_INTERVAL = 20;
@@ -76,21 +63,20 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     if(!document.createRange)
       return; // :'(
 
-    init();
+    init_event_listeners();
+    _goose = style_goose(_goose);
+    _goose.x = Math.floor(_bounds.width * 0.3);
+    _goose.y = 0;
+
+    setInterval(resize, 200);
+    resize();
+    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
 
     _goose = draw(_goose, gooseSpriteCoordinates[0]);
     document.body.appendChild(_goose);
   }
 
-  function init() {
-    _goose = style_goose(_goose);
-    setInterval(resize, 200);
-    resize();
-    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
-
-    _goose.x = Math.floor(_bounds.width * 0.3);
-    _goose.y = 0;
-
+  function init_event_listeners() {
     _keyHeld.fill(false);
     listener_add(document, "keydown", function(e) {
       if(!has_focus(_goose)) { return; }
@@ -116,58 +102,8 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   }
 
   function resize() {
-
-    _DOMObjectsDimensions = [];
-    all_text_nodes(document.body, function(e) {
-      let range = document.createRange();
-      range.selectNodeContents(e);
-      let rects = range.getClientRects();
-
-      for (const rect of rects) {
-        _DOMObjectsDimensions.push({
-          top: rect.top + window_scroll()[1],
-          left: rect.left,
-          width: rect.width,
-          height: rect.height
-        });
-      }
-    });
-
+    _DOMObjectsDimensions = initDOMObjectsDimensions();
     _bounds = init_bounds();
-  }
-
-  function init_bounds() {
-    let bounds = document_size();
-    let window_height = window_size()[1];
-    if(bounds[1] < window_height) {
-      bounds[1] = window_height;
-    }
-    return {
-      width: bounds[0],
-      height: bounds[1]
-    };
-  }
-
-  function style_goose(goose) {
-    goose = document.createElement("div");
-    goose.style.position = "absolute";
-    goose.style.backgroundImage = "url(\"data:image/png;base64," + gooseSpriteBase64 +"\")";
-    goose.style.backgroundRepeat = "no-repeat";
-    goose.style.filter = CSS_FILTER;
-    goose.style.transform = CSS_TRANSFORM;
-    goose.className = "gooseify";
-    return goose;
-  }
-
-  // Drawing is manipulated by adjusting CSS properties of the base64 encoded PNG:
-  function draw(goose, spriteFrameCoordinates) {
-    const [ spriteFrameX, spriteFrameY, spriteFrameWidth, spriteFrameHeight ] = spriteFrameCoordinates;
-    goose.style.top = (goose.y - spriteFrameHeight) + "px";
-    goose.style.left = goose.x + "px";
-    goose.style.width = spriteFrameWidth + "px";
-    goose.style.height = spriteFrameHeight + "px";
-    goose.style.backgroundPosition = (-spriteFrameX) + "px " + (-spriteFrameY) + "px";
-    return goose;
   }
 
   function update(bounds, keyHeld, DOMObjectsDimensions, goose) {

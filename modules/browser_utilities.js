@@ -35,7 +35,7 @@ function get_key(ev) {
 }
 
 // TODO: There is a bug where if one presses a key and changes the focus out of the browser
-// the key is stickied "down".
+// the key is stickied "down". Meaning we get caught in a loop of key presses.
 function has_focus(goose) {
   if (!document.hasFocus() || !goose) {
     return false;
@@ -49,6 +49,37 @@ function listener_add(el, ev, cb) {
     el.addEventListener(ev, cb, false);
   else
     el.attachEvent("on" + ev, cb);
+}
+
+function initDOMObjectsDimensions() {
+  let DOMObjectsDimensions = [];
+  all_text_nodes(document.body, function(e) {
+    let range = document.createRange();
+    range.selectNodeContents(e);
+    let rects = range.getClientRects();
+
+    for (const rect of rects) {
+      DOMObjectsDimensions.push({
+        top: rect.top + window_scroll()[1],
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      });
+    }
+  });
+  return DOMObjectsDimensions;
+}
+
+function init_bounds() {
+  let bounds = document_size();
+  let window_height = window_size()[1];
+  if(bounds[1] < window_height) {
+    bounds[1] = window_height;
+  }
+  return {
+    width: bounds[0],
+    height: bounds[1]
+  };
 }
 
 function window_scroll() {
@@ -96,12 +127,10 @@ function window_size() {
 }
 
 export {
-  all_text_nodes,
   collide,
-  document_size,
   get_key,
   has_focus,
-  listener_add,
-  window_scroll,
-  window_size
+  init_bounds,
+  initDOMObjectsDimensions,
+  listener_add
 };
