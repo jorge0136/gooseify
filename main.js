@@ -19,11 +19,12 @@ import {
 
 import {
   determine_direction,
-  handle_y_out_of_bounds,
   left_arrow_transform,
   right_arrow_transform,
   down_arrow_transform,
-  up_arrow_transform
+  up_arrow_transform,
+  ascendGooseY,
+  ascendSpriteIndex
 } from "./modules/goose_movements.js";
 
 import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
@@ -205,19 +206,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
 
     let direction = determine_direction(goose.x, oldX);
     if(ascend.active()) {
-      goose = ascending_transform(bounds, direction, goose, spriteFrameHeight);
-    }
-
-    let stationary = (goose.x == oldX && goose.y == oldY);
-    if(stationary) {
-      stationary_transform();
-      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-      return;
-    }
-
-    step++;
-
-    if(ascend.active()) {
+      goose = ascendingTransform(bounds, direction, goose, spriteFrameHeight);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
@@ -229,12 +218,20 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       return;
     }
 
+    let stationary = (goose.x == oldX && goose.y == oldY);
+    if(stationary) {
+      stationaryTransform();
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+      return;
+    }
+
     currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(step / 2) % 4];
 
+    step++;
     _goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
-  function stationary_transform() {
+  function stationaryTransform() {
     const stationary_pause_length = 20;
 
     // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
@@ -247,18 +244,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     currentSpriteIndex = step % stationarySpriteCoordinates.length;
   }
 
-  function ascending_transform(bounds, direction, goose) {
+  function ascendingTransform(bounds, direction, goose) {
     ascend.spriteIndex++;
-    if(ascend.spriteIndex < ascendSpriteCoordinates[direction].length) {
-      currentSpriteIndex = ascendSpriteCoordinates[direction][ascend.spriteIndex];
-    }
-    else {
-      currentSpriteIndex = ascendSpriteCoordinates[direction][ascendSpriteCoordinates[direction].length - 1];
-    }
-
-    goose.y = goose.y - ascend.height;
-    goose.y = handle_y_out_of_bounds(goose.y, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
-
+    currentSpriteIndex = ascendSpriteIndex(ascend, ascendSpriteCoordinates[direction]);
+    goose.y = ascendGooseY(goose, ascend.height, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
     ascend.height--;
     return goose;
   }
