@@ -46,7 +46,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
   const CSS_TRANSFORM = "scale(1.0)"; // To double the size of the rendered image use 'scale(2.0)'
   const MOVEMENT_SPEED = 3;
   const JUMP_HEIGHT = 11;
-  const UPDATE_INTERVAL = 12;
+  const UPDATE_INTERVAL = 20;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
@@ -211,13 +211,6 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       return;
     }
 
-    let descending = !ascend.active() && !sitting;
-    if(descending) {
-      currentSpriteIndex = descendSpriteCoordinates[direction][step%2];
-      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-      return;
-    }
-
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
       stationaryTransform();
@@ -225,10 +218,24 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
       return;
     }
 
-    currentSpriteIndex = runningSpriteCoordinates[direction][Math.floor(step / 2) % 4];
-
     step++;
-    _goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+
+    let descending = !ascend.active() && !sitting;
+    if(descending) {
+      currentSpriteIndex = descendSpriteCoordinates[direction][step%2];
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+      return;
+    }
+
+    currentSpriteIndex = runningTransform(runningSpriteCoordinates[direction], step);
+    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+  }
+
+  function runningTransform(directionalRunningSpriteCoordinates, step) {
+    // TODO: Why is -1 required for animation to come out right? Does this indicate an off by one
+    // error in the coordinate mapping?
+    const runningAnimationFrameLength = directionalRunningSpriteCoordinates.length - 1;
+    return directionalRunningSpriteCoordinates[Math.floor(step / 2) % runningAnimationFrameLength];
   }
 
   function stationaryTransform() {
