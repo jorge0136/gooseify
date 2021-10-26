@@ -12,6 +12,14 @@ function handle_x_out_of_bounds(x, spriteFrameW, boundsWidth) {
   return x;
 }
 
+function left_arrow_transform(x, moveSpeed, spriteFrameW, boundsWidth) {
+  return handle_x_out_of_bounds(x - moveSpeed, spriteFrameW, boundsWidth);
+}
+
+function right_arrow_transform(x, moveSpeed, spriteFrameW, boundsWidth) {
+  return handle_x_out_of_bounds(x + moveSpeed, spriteFrameW, boundsWidth);
+}
+
 function handle_y_out_of_bounds(y, boundsHeight, spriteFrameH) {
   if(y + 1 > boundsHeight) {
     y = boundsHeight - 1;
@@ -19,14 +27,6 @@ function handle_y_out_of_bounds(y, boundsHeight, spriteFrameH) {
     y = spriteFrameH;
   }
   return y;
-}
-
-function left_arrow_transform(x, moveSpeed) {
-  return x - moveSpeed;
-}
-
-function right_arrow_transform(x, moveSpeed) {
-  return x + moveSpeed;
 }
 
 function down_arrow_transform(y, moveSpeed) { return y + moveSpeed; }
@@ -39,7 +39,6 @@ function up_arrow_transform(ascend, jump_height) {
 
 export {
   determine_direction,
-  handle_x_out_of_bounds,
   handle_y_out_of_bounds,
   left_arrow_transform,
   right_arrow_transform,

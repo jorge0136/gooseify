@@ -19,7 +19,6 @@ import {
 
 import {
   determine_direction,
-  handle_x_out_of_bounds,
   handle_y_out_of_bounds,
   left_arrow_transform,
   right_arrow_transform,
@@ -159,8 +158,7 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     return goose;
   }
 
-  // Drawing is manipulated by adjusting the following CSS properties of the base64 encoded PNG:
-  // left, top, width, height, background-position
+  // Drawing is manipulated by adjusting CSS properties of the base64 encoded PNG:
   function draw(goose, spriteFrameCoordinates) {
     const [ spriteFrameX, spriteFrameY, spriteFrameWidth, spriteFrameHeight ] = spriteFrameCoordinates;
     goose.style.top = (goose.y - spriteFrameHeight) + "px";
@@ -194,11 +192,10 @@ import { gooseSpriteBase64 } from "./modules/goose_sprite.js";
     );
 
     if(keyHeld[37]) {
-      goose.x = left_arrow_transform(goose.x, MOVEMENT_SPEED);
+      goose.x = left_arrow_transform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
     } else if(keyHeld[39]) {
-      goose.x = right_arrow_transform(goose.x, MOVEMENT_SPEED);
+      goose.x = right_arrow_transform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
     }
-    goose.x = handle_x_out_of_bounds(goose.x, spriteFrameWidth, bounds.width);
 
     if(keyHeld[38] && !ascend.active() && sitting) {
       ascend = up_arrow_transform(ascend, JUMP_HEIGHT);
