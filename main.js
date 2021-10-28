@@ -65,11 +65,12 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     init_event_listeners();
     _goose = style_goose(_goose);
+
+    resize();
     _goose.x = Math.floor(_bounds.width * 0.3);
     _goose.y = 0;
-
     setInterval(resize, 200);
-    resize();
+
     setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
 
     _goose = draw(_goose, gooseSpriteCoordinates[0]);
