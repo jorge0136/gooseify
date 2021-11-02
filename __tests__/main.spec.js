@@ -5,7 +5,7 @@ const html = fs.readFileSync(path.resolve(__dirname, "../example_html/example.ht
 jest
   .dontMock("fs");
 
-describe("button", function() {
+describe("gooseify", function() {
   beforeEach(() => {
     document.documentElement.innerHTML = html.toString();
   });
@@ -15,7 +15,10 @@ describe("button", function() {
     jest.resetModules();
   });
 
-  it("button exists", function() {
-    expect(document.getElementById("disable")).toBeTruthy();
+  describe("when embedded in example html as a script module", () => {
+
+    it("renders a div with a goose class", function() {
+      expect(document.querySelector(".gooseify")).toBeTruthy();
+    });
   });
 });
