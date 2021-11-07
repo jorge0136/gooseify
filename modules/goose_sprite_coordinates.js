@@ -41,27 +41,28 @@ const gooseSpriteCoordinates = [
 ];
 
 const zeroIndexOffset = 1;
-
 const stationaryFrameCount = 6;
-const stationarySpriteCoordinates = range(0, stationaryFrameCount - zeroIndexOffset);
-
 const runDirectionFrameCount = 4;
+const preFlightFrameCount = 2;
+const flyDirectionFrameCount = 4;
+
+const stationarySpriteIndexes = range(0, stationaryFrameCount - zeroIndexOffset);
+
 const runLeft = range(6, runDirectionFrameCount - zeroIndexOffset);
 const runRight = range(10, runDirectionFrameCount - zeroIndexOffset);
-const runningSpriteCoordinates = [ runLeft, runRight];
+const runningSpriteIndexes = [ runLeft, runRight];
 
-const preFlightFrameCount = 2;
 const preFlightRight = range(14, preFlightFrameCount - zeroIndexOffset);
 const preFlightLeft = range(16, preFlightFrameCount - zeroIndexOffset);
 
-const flyDirectionFrameCount = 4;
 const flyRight = range(18, flyDirectionFrameCount - zeroIndexOffset);
 const flyLeft = range(22, flyDirectionFrameCount - zeroIndexOffset);
 
-const ascendSpriteCoordinates = [ preFlightRight.concat(flyRight), preFlightLeft.concat(flyLeft) ];
-const descendSpriteCoordinates = [ flyRight, flyLeft ];
+const descendSpriteIndexes = [ flyRight, flyLeft ];
+const ascendSpriteIndexes = [ preFlightRight.concat(flyRight), preFlightLeft.concat(flyLeft) ];
 
 // Provides an array of numbers ranging from baseIndex -> (baseIndex + rangeLength)
+// TODO: Add a spec for this function.
 function range(baseIndex, rangeLength){
   if(rangeLength <= baseIndex) {
     rangeLength = baseIndex + rangeLength;
@@ -71,8 +72,8 @@ function range(baseIndex, rangeLength){
 
 export {
   gooseSpriteCoordinates,
-  stationarySpriteCoordinates,
-  runningSpriteCoordinates,
-  ascendSpriteCoordinates,
-  descendSpriteCoordinates
+  stationarySpriteIndexes,
+  runningSpriteIndexes,
+  ascendSpriteIndexes,
+  descendSpriteIndexes
 };

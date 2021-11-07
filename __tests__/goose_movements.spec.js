@@ -61,13 +61,13 @@ describe("handle_x_out_of_bounds", () => {
 describe("ascendSpriteIndex", () => {
 
   // Represent the indexes of the ascending flight sprites.
-  let directionalAscendSpriteCoordinates = [ 0, 1, 2, 3 ];
+  let directionalascendSpriteIndexes = [ 0, 1, 2, 3 ];
 
   describe("when in the middle of the animation", () => {
     let ascend_spriteIndex = 2;
 
-    it("returns the value at the sprite index inside directionalAscendSpriteCoordinates", () => {
-      expect(ascendSpriteIndex(ascend_spriteIndex, directionalAscendSpriteCoordinates)).toBe(2);
+    it("returns the value at the sprite index inside directionalascendSpriteIndexes", () => {
+      expect(ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(2);
     });
   });
 
@@ -75,7 +75,7 @@ describe("ascendSpriteIndex", () => {
     let ascend_spriteIndex = 4;
 
     it("returns the value at the index representing the start of the animation (0)", () => {
-      expect(ascendSpriteIndex(ascend_spriteIndex, directionalAscendSpriteCoordinates)).toBe(0);
+      expect(ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(0);
     });
   });
 });

@@ -28,9 +28,9 @@ function up_arrow_transform(ascend, jump_height) {
   return ascend;
 }
 
-function ascendSpriteIndex(ascend_spriteIndex, directionalAscendSpriteCoordinates) {
-  const directionalAscendAnimationFrameCount = directionalAscendSpriteCoordinates.length;
-  return directionalAscendSpriteCoordinates[ascend_spriteIndex % directionalAscendAnimationFrameCount];
+function ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes) {
+  const directionalAscendAnimationFrameCount = directionalascendSpriteIndexes.length;
+  return directionalascendSpriteIndexes[ascend_spriteIndex % directionalAscendAnimationFrameCount];
 }
 
 function ascendGooseY(goose, ascend_height, bounds_height, spriteFrameH) {

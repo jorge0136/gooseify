@@ -9,10 +9,10 @@ import {
 
 import {
   gooseSpriteCoordinates,
-  stationarySpriteCoordinates,
-  runningSpriteCoordinates,
-  ascendSpriteCoordinates,
-  descendSpriteCoordinates
+  stationarySpriteIndexes,
+  runningSpriteIndexes,
+  ascendSpriteIndexes,
+  descendSpriteIndexes
 } from "./modules/goose_sprite_coordinates.js";
 
 import {
@@ -33,7 +33,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
   const MOVEMENT_SPEED = 3;
   const JUMP_HEIGHT = 11;
-  const UPDATE_INTERVAL = 20;
+  const UPDATE_INTERVAL = 30;
 
   //  TODO: Continue to remove global state and make this more of a functional transform.
   //  Ideally this would become a functional core with an imperative shell.
@@ -159,20 +159,20 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let descending = !ascend.active() && !sitting;
     if(descending) {
-      currentSpriteIndex = descendSpriteCoordinates[direction][step%2];
+      //  TODO: Extract out the length of the descendSpriteIndexes instead of hardcoded "4"
+      currentSpriteIndex = descendSpriteIndexes[direction][step % 4];
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
-    currentSpriteIndex = runningTransform(runningSpriteCoordinates[direction], step);
+    currentSpriteIndex = runningTransform(runningSpriteIndexes[direction], step);
     goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
-  function runningTransform(directionalRunningSpriteCoordinates, step) {
-    // TODO: Why is -1 required for animation to come out right? Does this indicate an off by one
-    // error in the coordinate mapping?
-    const runningAnimationFrameLength = directionalRunningSpriteCoordinates.length - 1;
-    return directionalRunningSpriteCoordinates[Math.floor(step / 2) % runningAnimationFrameLength];
+  // TODO: Extract to goose_movements.js
+  function runningTransform(directionalrunningSpriteIndexes, step) {
+    const runningAnimationFrameLength = directionalrunningSpriteIndexes.length;
+    return directionalrunningSpriteIndexes[Math.floor(step / 2) % runningAnimationFrameLength];
   }
 
   function stationaryTransform() {
@@ -185,12 +185,12 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     }
     stationaryStep--;
 
-    currentSpriteIndex = step % stationarySpriteCoordinates.length;
+    currentSpriteIndex = step % stationarySpriteIndexes.length;
   }
 
   function ascendingTransform(bounds, direction, goose) {
     ascend.spriteIndex++;
-    currentSpriteIndex = ascendSpriteIndex(ascend.spriteIndex, ascendSpriteCoordinates[direction]);
+    currentSpriteIndex = ascendSpriteIndex(ascend.spriteIndex, ascendSpriteIndexes[direction]);
     goose.y = ascendGooseY(goose, ascend.height, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
     ascend.height--;
     return goose;
