@@ -27,6 +27,8 @@ const gooseSpriteCoordinates = [
   // Pre-Flight
   [ 0, 66].concat(preFlightSize),
   [ 26, 66].concat(preFlightSize),
+  [ 52, 66].concat(preFlightSize),
+  [ 78, 66].concat(preFlightSize),
   // Flying
   [ 0,  93 ].concat(flyingSize),
   [ 26, 93 ].concat(flyingSize),
@@ -38,31 +40,33 @@ const gooseSpriteCoordinates = [
   [ 78, 120 ].concat(flyingSize)
 ];
 
+const zeroIndexOffset = 1;
+
 const stationaryFrameCount = 6;
-const stationarySpriteCoordinates = range(0, stationaryFrameCount - 1);
+const stationarySpriteCoordinates = range(0, stationaryFrameCount - zeroIndexOffset);
 
 const runDirectionFrameCount = 4;
-const runLeft = range(6, runDirectionFrameCount);
-const runRight = range(10, runDirectionFrameCount);
+const runLeft = range(6, runDirectionFrameCount - zeroIndexOffset);
+const runRight = range(10, runDirectionFrameCount - zeroIndexOffset);
 const runningSpriteCoordinates = [ runLeft, runRight];
 
 const preFlightFrameCount = 2;
-const preFlight = range(14, preFlightFrameCount);
+const preFlightRight = range(14, preFlightFrameCount - zeroIndexOffset);
+const preFlightLeft = range(16, preFlightFrameCount - zeroIndexOffset);
 
 const flyDirectionFrameCount = 4;
-const flyRight = range(16, flyDirectionFrameCount - 1);
-//  TODO: Need to add sprites for preFlight left. Right now preflight is always right.
-const flyLeft = range(20, flyDirectionFrameCount - 1);
+const flyRight = range(18, flyDirectionFrameCount - zeroIndexOffset);
+const flyLeft = range(22, flyDirectionFrameCount - zeroIndexOffset);
 
-const ascendSpriteCoordinates = [ preFlight.concat(flyRight), preFlight.concat(flyLeft) ];
+const ascendSpriteCoordinates = [ preFlightRight.concat(flyRight), preFlightLeft.concat(flyLeft) ];
 const descendSpriteCoordinates = [ flyRight, flyLeft ];
 
-// Provides an array of numbers ranging from a -> (a + b)
-function range(a, b){
-  if(b < a) {
-    b = a + b;
+// Provides an array of numbers ranging from baseIndex -> (baseIndex + rangeLength)
+function range(baseIndex, rangeLength){
+  if(rangeLength <= baseIndex) {
+    rangeLength = baseIndex + rangeLength;
   }
-  return [...Array(b - a + 1).keys()].map(x => x + a);
+  return [...Array(rangeLength - baseIndex + 1).keys()].map(x => x + baseIndex);
 }
 
 export {

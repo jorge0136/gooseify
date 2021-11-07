@@ -29,9 +29,7 @@ function up_arrow_transform(ascend, jump_height) {
 }
 
 function ascendSpriteIndex(ascend_spriteIndex, directionalAscendSpriteCoordinates) {
-  console.log(ascend_spriteIndex);
   const directionalAscendAnimationFrameCount = directionalAscendSpriteCoordinates.length;
-  console.log(directionalAscendAnimationFrameCount);
   return directionalAscendSpriteCoordinates[ascend_spriteIndex % directionalAscendAnimationFrameCount];
 }
 
