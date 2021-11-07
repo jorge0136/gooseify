@@ -190,7 +190,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
   function ascendingTransform(bounds, direction, goose) {
     ascend.spriteIndex++;
-    currentSpriteIndex = ascendSpriteIndex(ascend, ascendSpriteCoordinates[direction]);
+    currentSpriteIndex = ascendSpriteIndex(ascend.spriteIndex, ascendSpriteCoordinates[direction]);
     goose.y = ascendGooseY(goose, ascend.height, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
     ascend.height--;
     return goose;

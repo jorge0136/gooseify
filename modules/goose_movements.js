@@ -28,14 +28,11 @@ function up_arrow_transform(ascend, jump_height) {
   return ascend;
 }
 
-function ascendSpriteIndex(ascend, directionalAscendSpriteCoordinates) {
+function ascendSpriteIndex(ascend_spriteIndex, directionalAscendSpriteCoordinates) {
+  console.log(ascend_spriteIndex);
   const directionalAscendAnimationFrameCount = directionalAscendSpriteCoordinates.length;
-  if(ascend.spriteIndex < directionalAscendAnimationFrameCount) {
-    return directionalAscendSpriteCoordinates[ascend.spriteIndex];
-  }
-  else {
-    return directionalAscendSpriteCoordinates[directionalAscendAnimationFrameCount - 1];
-  }
+  console.log(directionalAscendAnimationFrameCount);
+  return directionalAscendSpriteCoordinates[ascend_spriteIndex % directionalAscendAnimationFrameCount];
 }
 
 function ascendGooseY(goose, ascend_height, bounds_height, spriteFrameH) {
@@ -60,5 +57,6 @@ export {
   down_arrow_transform,
   up_arrow_transform,
   ascendGooseY,
-  ascendSpriteIndex
+  ascendSpriteIndex,
+  handle_x_out_of_bounds
 };
