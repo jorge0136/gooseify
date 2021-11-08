@@ -153,9 +153,8 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
-      stationaryTransform();
-      currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
-      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+      randomizeStationaryAnimation();
+      goose = draw(goose, gooseSpriteCoordinates[nextStationarySpriteIndex(stationarySpriteIndexes, step)]);
       return;
     }
 
@@ -170,7 +169,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     goose = draw(goose, gooseSpriteCoordinates[nextRunningSpriteIndex(runningSpriteIndexes[direction], step)]);
   }
 
-  function stationaryTransform() {
+  function randomizeStationaryAnimation() {
     const stationary_pause_length = 20;
 
     // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
