@@ -170,8 +170,8 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
       step++;
       return;
+
     } else {
-      // By exclusion, if we have not returned we are running.
       currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
