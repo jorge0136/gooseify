@@ -45,9 +45,9 @@ function nextStationarySpriteIndex(stationarySpriteIndexes, step) {
   return step % stationaryAnimationFrameCount;
 }
 
-function nextAscendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes) {
+function nextAscendSpriteIndex(directionalascendSpriteIndexes, step) {
   const directionalAscendAnimationFrameCount = directionalascendSpriteIndexes.length;
-  return directionalascendSpriteIndexes[ascend_spriteIndex % directionalAscendAnimationFrameCount];
+  return directionalascendSpriteIndexes[step % directionalAscendAnimationFrameCount];
 }
 
 function nextDescendSpriteIndex(directionaldescendSpriteIndexes, step) {

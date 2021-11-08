@@ -169,6 +169,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
       return;
     }
 
+    // By exclusion, if we have not returned we are running.
     currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
     goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
@@ -176,9 +177,11 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
   //  TODO: Extract this final function.
   //  Break it down into adjusting the sprite index vs. the height / y.
   function ascendingTransform(bounds, direction, goose) {
-    ascend.spriteIndex++;
-    currentSpriteIndex = nextAscendSpriteIndex(ascend.spriteIndex, ascendSpriteIndexes[direction]);
-    goose.y = ascendGooseY(goose, ascend.height, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
+
+    currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
+    const spriteFrameWidth = gooseSpriteCoordinates[currentSpriteIndex][3];
+    goose.y = ascendGooseY(goose, ascend.height, bounds.height, spriteFrameWidth);
+    step++;
     ascend.height--;
     return goose;
   }
