@@ -148,20 +148,19 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     if(ascend.active()) {
       currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
       const spriteFrameHeight = gooseSpriteCoordinates[currentSpriteIndex][3];
+      goose.y = ascendGooseY(goose, ascend.height, bounds.height, spriteFrameHeight);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
       step++;
       ascend.height--;
-
-      goose.y = ascendGooseY(goose, ascend.height, bounds.height, spriteFrameHeight);
-      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
-      [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
       currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+      [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
       return;
     }
 
