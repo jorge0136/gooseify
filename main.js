@@ -39,7 +39,6 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
   const JUMP_HEIGHT = 11;
   const UPDATE_INTERVAL = 30;
 
-
   let _goose = {
     x: 0,
     y: 0,
@@ -51,7 +50,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
   let _keyHeld = [];
   let _DOMObjectsDimensions = [];
 
-  // Namespaced global animation variables.
+  // Global animation variables.
   let currentSpriteIndex = 0;
   let step = 0;
   let stationaryStep = 0;
@@ -145,6 +144,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     }
 
     let direction = determine_direction(goose.x, oldX);
+
     if(ascend.active()) {
       currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
       const spriteFrameHeight = gooseSpriteCoordinates[currentSpriteIndex][3];
@@ -160,22 +160,26 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     if(stationary) {
       currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+
       [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
       return;
     }
-
-    step++;
 
     let descending = !ascend.active() && !sitting;
     if(descending) {
       currentSpriteIndex = nextDescendSpriteIndex(descendSpriteIndexes[direction], step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+
+      step++;
       return;
     }
 
     // By exclusion, if we have not returned we are running.
     currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
     goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+
+    step++;
+    return;
   }
 
   window.gooseify = gooseify;
