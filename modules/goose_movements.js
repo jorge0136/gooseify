@@ -28,6 +28,18 @@ function up_arrow_transform(ascend, jump_height) {
   return ascend;
 }
 
+function randomizeStationaryAnimation(step, stationarystep) {
+  const stationary_pause_length = 20;
+
+  // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
+  if(stationarystep <= 0) {
+    stationarystep = Math.floor(Math.random() * stationary_pause_length) + stationary_pause_length;
+    step = Math.floor(Math.random() * 100000);
+  }
+  stationarystep--;
+  return [ step, stationarystep ];
+}
+
 function nextStationarySpriteIndex(stationarySpriteIndexes, step) {
   const stationaryAnimationFrameCount = stationarySpriteIndexes.length;
   return step % stationaryAnimationFrameCount;
@@ -70,6 +82,7 @@ export {
   down_arrow_transform,
   up_arrow_transform,
   ascendGooseY,
+  randomizeStationaryAnimation,
   nextStationarySpriteIndex,
   nextAscendSpriteIndex,
   nextDescendSpriteIndex,

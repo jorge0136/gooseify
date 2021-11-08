@@ -22,6 +22,7 @@ import {
   down_arrow_transform,
   up_arrow_transform,
   ascendGooseY,
+  randomizeStationaryAnimation,
   nextStationarySpriteIndex,
   nextAscendSpriteIndex,
   nextDescendSpriteIndex,
@@ -34,7 +35,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
   "use strict";
   /* eslint-env browser */
 
-  const MOVEMENT_SPEED = 3;
+  const MOVEMENT_SPEED = 5;
   const JUMP_HEIGHT = 11;
   const UPDATE_INTERVAL = 30;
 
@@ -153,8 +154,9 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
-      randomizeStationaryAnimation();
-      goose = draw(goose, gooseSpriteCoordinates[nextStationarySpriteIndex(stationarySpriteIndexes, step)]);
+      [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
+      currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
@@ -162,24 +164,17 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let descending = !ascend.active() && !sitting;
     if(descending) {
-      goose = draw(goose, gooseSpriteCoordinates[nextDescendSpriteIndex(descendSpriteIndexes[direction], step)]);
+      currentSpriteIndex = nextDescendSpriteIndex(descendSpriteIndexes[direction], step);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
 
-    goose = draw(goose, gooseSpriteCoordinates[nextRunningSpriteIndex(runningSpriteIndexes[direction], step)]);
+    currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
+    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
   }
 
-  function randomizeStationaryAnimation() {
-    const stationary_pause_length = 20;
-
-    // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
-    if(stationaryStep <= 0) {
-      stationaryStep = Math.floor(Math.random() * stationary_pause_length) + stationary_pause_length;
-      step = Math.floor(Math.random() * 100000);
-    }
-    stationaryStep--;
-  }
-
+  //  TODO: Extract this final function.
+  //  Break it down into adjusting the sprite index vs. the height / y.
   function ascendingTransform(bounds, direction, goose) {
     ascend.spriteIndex++;
     currentSpriteIndex = nextAscendSpriteIndex(ascend.spriteIndex, ascendSpriteIndexes[direction]);
