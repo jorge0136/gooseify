@@ -39,29 +39,28 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
   const JUMP_HEIGHT = 11;
   const UPDATE_INTERVAL = 30;
 
-  //  TODO: Continue to remove global state and make this more of a functional transform.
-  //  Ideally this would become a functional core with an imperative shell.
+
   let _goose = {
     x: 0,
     y: 0,
   };
-  let currentSpriteIndex = 0;
-  let step = 0;
-  let stationaryStep = 0;
-  let ascend = {
-    height: 0,
-    spriteIndex: -1,
-    active: function() {
-      return this.height > -1;
-    }
-  };
-
   let _bounds = {
     height: 0,
     width: 0
   };
   let _keyHeld = [];
   let _DOMObjectsDimensions = [];
+
+  // Namespaced global animation variables.
+  let currentSpriteIndex = 0;
+  let step = 0;
+  let stationaryStep = 0;
+  let ascend = {
+    height: 0,
+    active: function() {
+      return this.height > -1;
+    }
+  };
 
   function gooseify() {
     if(!document.createRange)
@@ -147,7 +146,13 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let direction = determine_direction(goose.x, oldX);
     if(ascend.active()) {
-      goose = ascendingTransform(bounds, direction, goose, spriteFrameHeight);
+      currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
+      const spriteFrameHeight = gooseSpriteCoordinates[currentSpriteIndex][3];
+
+      step++;
+      ascend.height--;
+
+      goose.y = ascendGooseY(goose, ascend.height, bounds.height, spriteFrameHeight);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
@@ -172,18 +177,6 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     // By exclusion, if we have not returned we are running.
     currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
     goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-  }
-
-  //  TODO: Extract this final function.
-  //  Break it down into adjusting the sprite index vs. the height / y.
-  function ascendingTransform(bounds, direction, goose) {
-
-    currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
-    const spriteFrameWidth = gooseSpriteCoordinates[currentSpriteIndex][3];
-    goose.y = ascendGooseY(goose, ascend.height, bounds.height, spriteFrameWidth);
-    step++;
-    ascend.height--;
-    return goose;
   }
 
   window.gooseify = gooseify;

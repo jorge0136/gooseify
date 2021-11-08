@@ -11,7 +11,7 @@ const gooseSpriteBase64 = "iVBORw0KGgoAAAANSUhEUgAAALQAAACTCAYAAAAnZDO8AAAAAXNSR
  * To generate other filters using rgb() @link https://stackoverflow.com/a/43960991
  **/
 const CSS_FILTER = "";
-const CSS_TRANSFORM = "scale(1.5)"; // To double the size of the rendered image use 'scale(2.0)'
+const CSS_TRANSFORM = "scale(1.2)"; // To double the size of the rendered image use 'scale(2.0)'
 
 function style_goose(goose) {
   goose = document.createElement("div");
