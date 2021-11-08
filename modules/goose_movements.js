@@ -28,9 +28,24 @@ function up_arrow_transform(ascend, jump_height) {
   return ascend;
 }
 
-function ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes) {
+function nextStationarySpriteIndex(stationarySpriteIndexes, step) {
+  const stationaryAnimationFrameCount = stationarySpriteIndexes.length;
+  return step % stationaryAnimationFrameCount;
+}
+
+function nextAscendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes) {
   const directionalAscendAnimationFrameCount = directionalascendSpriteIndexes.length;
   return directionalascendSpriteIndexes[ascend_spriteIndex % directionalAscendAnimationFrameCount];
+}
+
+function nextDescendSpriteIndex(directionaldescendSpriteIndexes, step) {
+  const descendAnimationFrameCount = directionaldescendSpriteIndexes.length;
+  return directionaldescendSpriteIndexes[step % descendAnimationFrameCount];
+}
+
+function nextRunningSpriteIndex(directionalrunningSpriteIndexes, step) {
+  const runningAnimationFrameCount = directionalrunningSpriteIndexes.length;
+  return directionalrunningSpriteIndexes[Math.floor(step / 2) % runningAnimationFrameCount];
 }
 
 function ascendGooseY(goose, ascend_height, bounds_height, spriteFrameH) {
@@ -55,6 +70,9 @@ export {
   down_arrow_transform,
   up_arrow_transform,
   ascendGooseY,
-  ascendSpriteIndex,
+  nextStationarySpriteIndex,
+  nextAscendSpriteIndex,
+  nextDescendSpriteIndex,
+  nextRunningSpriteIndex,
   handle_x_out_of_bounds
 };

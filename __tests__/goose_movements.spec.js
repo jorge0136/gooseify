@@ -2,7 +2,7 @@ import {
   determine_direction,
   handle_x_out_of_bounds,
   ascendGooseY,
-  ascendSpriteIndex
+  nextAscendSpriteIndex
 } from "../modules/goose_movements.js";
 
 describe("determine_direction", () => {
@@ -58,7 +58,7 @@ describe("handle_x_out_of_bounds", () => {
   });
 });
 
-describe("ascendSpriteIndex", () => {
+describe("nextAscendSpriteIndex", () => {
 
   // Represent the indexes of the ascending flight sprites.
   let directionalascendSpriteIndexes = [ 0, 1, 2, 3 ];
@@ -67,7 +67,7 @@ describe("ascendSpriteIndex", () => {
     let ascend_spriteIndex = 2;
 
     it("returns the value at the sprite index inside directionalascendSpriteIndexes", () => {
-      expect(ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(2);
+      expect(nextAscendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(2);
     });
   });
 
@@ -75,7 +75,7 @@ describe("ascendSpriteIndex", () => {
     let ascend_spriteIndex = 4;
 
     it("returns the value at the index representing the start of the animation (0)", () => {
-      expect(ascendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(0);
+      expect(nextAscendSpriteIndex(ascend_spriteIndex, directionalascendSpriteIndexes)).toBe(0);
     });
   });
 });

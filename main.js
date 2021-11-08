@@ -22,7 +22,10 @@ import {
   down_arrow_transform,
   up_arrow_transform,
   ascendGooseY,
-  ascendSpriteIndex
+  nextStationarySpriteIndex,
+  nextAscendSpriteIndex,
+  nextDescendSpriteIndex,
+  nextRunningSpriteIndex
 } from "./modules/goose_movements.js";
 
 import { style_goose, draw } from "./modules/goose_sprite.js";
@@ -151,6 +154,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     let stationary = (goose.x == oldX && goose.y == oldY);
     if(stationary) {
       stationaryTransform();
+      currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
       return;
     }
@@ -159,20 +163,11 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     let descending = !ascend.active() && !sitting;
     if(descending) {
-      //  TODO: Extract out the length of the descendSpriteIndexes instead of hardcoded "4"
-      currentSpriteIndex = descendSpriteIndexes[direction][step % 4];
-      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+      goose = draw(goose, gooseSpriteCoordinates[nextDescendSpriteIndex(descendSpriteIndexes[direction], step)]);
       return;
     }
 
-    currentSpriteIndex = runningTransform(runningSpriteIndexes[direction], step);
-    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-  }
-
-  // TODO: Extract to goose_movements.js
-  function runningTransform(directionalrunningSpriteIndexes, step) {
-    const runningAnimationFrameLength = directionalrunningSpriteIndexes.length;
-    return directionalrunningSpriteIndexes[Math.floor(step / 2) % runningAnimationFrameLength];
+    goose = draw(goose, gooseSpriteCoordinates[nextRunningSpriteIndex(runningSpriteIndexes[direction], step)]);
   }
 
   function stationaryTransform() {
@@ -184,13 +179,11 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
       step = Math.floor(Math.random() * 100000);
     }
     stationaryStep--;
-
-    currentSpriteIndex = step % stationarySpriteIndexes.length;
   }
 
   function ascendingTransform(bounds, direction, goose) {
     ascend.spriteIndex++;
-    currentSpriteIndex = ascendSpriteIndex(ascend.spriteIndex, ascendSpriteIndexes[direction]);
+    currentSpriteIndex = nextAscendSpriteIndex(ascend.spriteIndex, ascendSpriteIndexes[direction]);
     goose.y = ascendGooseY(goose, ascend.height, bounds.height, gooseSpriteCoordinates[currentSpriteIndex][3]);
     ascend.height--;
     return goose;
