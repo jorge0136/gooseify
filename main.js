@@ -144,6 +144,8 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     }
 
     let direction = determine_direction(goose.x, oldX);
+    let stationary = (goose.x == oldX && goose.y == oldY);
+    let descending = !ascend.active() && !sitting;
 
     if(ascend.active()) {
       currentSpriteIndex = nextAscendSpriteIndex(ascendSpriteIndexes[direction], step);
@@ -154,32 +156,28 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
       step++;
       ascend.height--;
       return;
-    }
 
-    let stationary = (goose.x == oldX && goose.y == oldY);
-    if(stationary) {
+    } else if (stationary) {
       currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
       [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
       return;
-    }
 
-    let descending = !ascend.active() && !sitting;
-    if(descending) {
+    } else if (descending) {
       currentSpriteIndex = nextDescendSpriteIndex(descendSpriteIndexes[direction], step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
       step++;
       return;
+    } else {
+      // By exclusion, if we have not returned we are running.
+      currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
+      goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
+
+      step++;
+      return;
     }
-
-    // By exclusion, if we have not returned we are running.
-    currentSpriteIndex = nextRunningSpriteIndex(runningSpriteIndexes[direction], step);
-    goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
-
-    step++;
-    return;
   }
 
   window.gooseify = gooseify;
