@@ -13,7 +13,7 @@ const gooseSpriteBase64 = "iVBORw0KGgoAAAANSUhEUgAAALQAAACTCAYAAAAnZDO8AAAAAXNSR
 const CSS_FILTER = "";
 const CSS_TRANSFORM = "scale(1.2)"; // To double the size of the rendered image use 'scale(2.0)'
 
-function style_goose(goose) {
+function styleGoose(goose) {
   goose = document.createElement("div");
   goose.style.position = "absolute";
   goose.style.backgroundImage = "url(\"data:image/png;base64," + gooseSpriteBase64 +"\")";
@@ -35,4 +35,4 @@ function draw(goose, spriteFrameCoordinates) {
   return goose;
 }
 
-export { style_goose, draw };
+export { styleGoose, draw };

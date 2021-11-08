@@ -1,9 +1,9 @@
 
-function determine_direction(x, oldX) {
+function determineDirection(x, oldX) {
   return (x > oldX) ? 0 : 1;
 }
 
-function handle_x_out_of_bounds(x, spriteFrameW, boundsWidth) {
+function handleXOutOfBounds(x, spriteFrameW, boundsWidth) {
   if(x < 0) {
     x = 0;
   } else if(x + spriteFrameW > boundsWidth){
@@ -12,28 +12,28 @@ function handle_x_out_of_bounds(x, spriteFrameW, boundsWidth) {
   return x;
 }
 
-function left_arrow_transform(x, moveSpeed, spriteFrameW, boundsWidth) {
-  return handle_x_out_of_bounds(x - moveSpeed, spriteFrameW, boundsWidth);
+function leftArrowTransform(x, moveSpeed, spriteFrameW, boundsWidth) {
+  return handleXOutOfBounds(x - moveSpeed, spriteFrameW, boundsWidth);
 }
 
-function right_arrow_transform(x, moveSpeed, spriteFrameW, boundsWidth) {
-  return handle_x_out_of_bounds(x + moveSpeed, spriteFrameW, boundsWidth);
+function rightArrowTransform(x, moveSpeed, spriteFrameW, boundsWidth) {
+  return handleXOutOfBounds(x + moveSpeed, spriteFrameW, boundsWidth);
 }
 
-function down_arrow_transform(y, moveSpeed) { return y + moveSpeed; }
+function downArrowTransform(y, moveSpeed) { return y + moveSpeed; }
 
-function up_arrow_transform(ascend, jump_height) {
-  ascend.height = jump_height;
+function upArrowTransform(ascend, jumpHeight) {
+  ascend.height = jumpHeight;
   ascend.spriteIndex = -1;
   return ascend;
 }
 
 function randomizeStationaryAnimation(step, stationarystep) {
-  const stationary_pause_length = 20;
+  const stationaryPauseLength = 20;
 
   // Random jumps between the stationary goose frames. Uses stationaryStep as a timer.
   if(stationarystep <= 0) {
-    stationarystep = Math.floor(Math.random() * stationary_pause_length) + stationary_pause_length;
+    stationarystep = Math.floor(Math.random() * stationaryPauseLength) + stationaryPauseLength;
     step = Math.floor(Math.random() * 100000);
   }
   stationarystep--;
@@ -60,13 +60,13 @@ function nextRunningSpriteIndex(directionalrunningSpriteIndexes, step) {
   return directionalrunningSpriteIndexes[Math.floor(step / 2) % runningAnimationFrameCount];
 }
 
-function ascendGooseY(goose, ascend_height, bounds_height, spriteFrameH) {
-  goose.y = goose.y - ascend_height;
-  goose.y = handle_y_out_of_bounds(goose.y, bounds_height, spriteFrameH);
+function ascendGooseY(goose, ascendHeight, boundsHeight, spriteFrameH) {
+  goose.y = goose.y - ascendHeight;
+  goose.y = handleYOutOfBounds(goose.y, boundsHeight, spriteFrameH);
   return goose.y;
 }
 
-function handle_y_out_of_bounds(y, boundsHeight, spriteFrameH) {
+function handleYOutOfBounds(y, boundsHeight, spriteFrameH) {
   if(y + 1 > boundsHeight) {
     y = boundsHeight - 1;
   } else if(y - spriteFrameH < 0) {
@@ -76,16 +76,16 @@ function handle_y_out_of_bounds(y, boundsHeight, spriteFrameH) {
 }
 
 export {
-  determine_direction,
-  left_arrow_transform,
-  right_arrow_transform,
-  down_arrow_transform,
-  up_arrow_transform,
+  determineDirection,
+  leftArrowTransform,
+  rightArrowTransform,
+  downArrowTransform,
+  upArrowTransform,
   ascendGooseY,
   randomizeStationaryAnimation,
   nextStationarySpriteIndex,
   nextAscendSpriteIndex,
   nextDescendSpriteIndex,
   nextRunningSpriteIndex,
-  handle_x_out_of_bounds
+  handleXOutOfBounds
 };

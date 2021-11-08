@@ -1,18 +1,18 @@
 import {
-  determine_direction,
-  handle_x_out_of_bounds,
+  determineDirection,
+  handleXOutOfBounds,
   ascendGooseY,
   nextAscendSpriteIndex
 } from "../modules/goose_movements.js";
 
-describe("determine_direction", () => {
+describe("determineDirection", () => {
 
   describe("when oldX is less than x", () => {
 
     let x = 3;
     let oldX = 2;
     it("returns 0", () => {
-      expect(determine_direction(x, oldX)).toBe(0);
+      expect(determineDirection(x, oldX)).toBe(0);
     });
   });
 
@@ -21,7 +21,7 @@ describe("determine_direction", () => {
     let x = 3;
     let oldX = 4;
     it("returns 1", () => {
-      expect(determine_direction(x, oldX)).toBe(1);
+      expect(determineDirection(x, oldX)).toBe(1);
     });
   });
 
@@ -30,12 +30,12 @@ describe("determine_direction", () => {
     let x = 3;
     let oldX = 3;
     it("returns 1", () => {
-      expect(determine_direction(x, oldX)).toBe(1);
+      expect(determineDirection(x, oldX)).toBe(1);
     });
   });
 });
 
-describe("handle_x_out_of_bounds", () => {
+describe("handleXOutOfBounds", () => {
 
   describe("when x is less than 0", () => {
     let x = -5000;
@@ -43,7 +43,7 @@ describe("handle_x_out_of_bounds", () => {
     let boundsWidth = 0;
 
     it("returns 0", () => {
-      expect(handle_x_out_of_bounds(x, spriteFrameW, boundsWidth)).toBe(0);
+      expect(handleXOutOfBounds(x, spriteFrameW, boundsWidth)).toBe(0);
     });
   });
 
@@ -53,7 +53,7 @@ describe("handle_x_out_of_bounds", () => {
     let boundsWidth = 8;
 
     it("returns x as boundsWidth - spriteFrameW;", () => {
-      expect(handle_x_out_of_bounds(x, spriteFrameW, boundsWidth)).toBe(boundsWidth - spriteFrameW);
+      expect(handleXOutOfBounds(x, spriteFrameW, boundsWidth)).toBe(boundsWidth - spriteFrameW);
     });
   });
 });

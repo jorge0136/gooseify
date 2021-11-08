@@ -1,10 +1,10 @@
 import {
-  collide,
-  get_key,
-  has_focus,
-  init_bounds,
+  collidesWithDOM,
+  getKey,
+  hasFocus,
+  initBounds,
   initDOMObjectsDimensions,
-  listener_add
+  listenerAdd
 } from "./modules/browser_utilities.js";
 
 import {
@@ -16,11 +16,11 @@ import {
 } from "./modules/goose_sprite_coordinates.js";
 
 import {
-  determine_direction,
-  left_arrow_transform,
-  right_arrow_transform,
-  down_arrow_transform,
-  up_arrow_transform,
+  determineDirection,
+  leftArrowTransform,
+  rightArrowTransform,
+  downArrowTransform,
+  upArrowTransform,
   ascendGooseY,
   randomizeStationaryAnimation,
   nextStationarySpriteIndex,
@@ -29,14 +29,14 @@ import {
   nextRunningSpriteIndex
 } from "./modules/goose_movements.js";
 
-import { style_goose, draw } from "./modules/goose_sprite.js";
+import { styleGoose, draw } from "./modules/goose_sprite.js";
 
 (() => {
   "use strict";
   /* eslint-env browser */
 
   const MOVEMENT_SPEED = 5;
-  const JUMP_HEIGHT = 11;
+  const jumpHeight = 11;
   const UPDATE_INTERVAL = 30;
 
   let _goose = {
@@ -65,8 +65,8 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     if(!document.createRange)
       return; // :'(
 
-    init_event_listeners();
-    _goose = style_goose(_goose);
+    initEventListeners();
+    _goose = styleGoose(_goose);
 
     resize();
     _goose.x = Math.floor(_bounds.width * 0.3);
@@ -79,12 +79,12 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     document.body.appendChild(_goose);
   }
 
-  function init_event_listeners() {
+  function initEventListeners() {
     _keyHeld.fill(false);
-    listener_add(document, "keydown", function(e) {
-      if(!has_focus(_goose)) { return; }
+    listenerAdd(document, "keydown", function(e) {
+      if(!hasFocus(_goose)) { return; }
 
-      let k = get_key(e);
+      let k = getKey(e);
       _keyHeld[k] = true;
 
       if(k >= 37 && k <= 40) {
@@ -92,10 +92,10 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
       }
     });
 
-    listener_add(document, "keyup", function(e) {
-      if(!has_focus(_goose)) { return; }
+    listenerAdd(document, "keyup", function(e) {
+      if(!hasFocus(_goose)) { return; }
 
-      let k = get_key(e);
+      let k = getKey(e);
       _keyHeld[k] = false;
 
       if(k >= 37 && k <= 40) {
@@ -106,12 +106,13 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
   function resize() {
     _DOMObjectsDimensions = initDOMObjectsDimensions();
-    _bounds = init_bounds();
+    _bounds = initBounds();
   }
 
   function update(bounds, keyHeld, DOMObjectsDimensions, goose) {
-    if(step > 1000000)
+    if(step > 1000000) {
       step = 0;
+    }
 
     let oldX = goose.x;
     let oldY = goose.y;
@@ -120,7 +121,7 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
 
     const gooseAtBottom =  (goose.y + 2 > bounds.height);
 
-    let sitting = gooseAtBottom || collide(
+    let sitting = gooseAtBottom || collidesWithDOM(
       {
         "top": goose.y - spriteFrameHeight,
         "left": goose.x,
@@ -132,18 +133,18 @@ import { style_goose, draw } from "./modules/goose_sprite.js";
     );
 
     if(keyHeld[37]) {
-      goose.x = left_arrow_transform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
+      goose.x = leftArrowTransform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
     } else if(keyHeld[39]) {
-      goose.x = right_arrow_transform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
+      goose.x = rightArrowTransform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
     }
 
     if(keyHeld[38] && !ascend.active() && sitting) {
-      ascend = up_arrow_transform(ascend, JUMP_HEIGHT);
+      ascend = upArrowTransform(ascend, jumpHeight);
     } else if(keyHeld[40] || (!ascend.active() && !sitting && !gooseAtBottom)) {
-      goose.y = down_arrow_transform(goose.y, MOVEMENT_SPEED);
+      goose.y = downArrowTransform(goose.y, MOVEMENT_SPEED);
     }
 
-    let direction = determine_direction(goose.x, oldX);
+    let direction = determineDirection(goose.x, oldX);
     let stationary = (goose.x == oldX && goose.y == oldY);
     let descending = !ascend.active() && !sitting;
 
