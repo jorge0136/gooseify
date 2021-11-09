@@ -57,8 +57,10 @@ function nextDescendSpriteIndex(directionaldescendSpriteIndexes, step) {
 }
 
 function nextRunningSpriteIndex(directionalrunningSpriteIndexes, step) {
+  const stepsPerFrame = 2;
+
   const runningAnimationFrameCount = directionalrunningSpriteIndexes.length;
-  return directionalrunningSpriteIndexes[Math.floor(step / 2) % runningAnimationFrameCount];
+  return directionalrunningSpriteIndexes[Math.floor(step / stepsPerFrame) % runningAnimationFrameCount];
 }
 
 function ascendGooseY(goose, ascendHeight, boundsHeight, spriteFrameH) {

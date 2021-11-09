@@ -126,3 +126,7 @@ describe("nextAscendSpriteIndex", () => {
     });
   });
 });
+
+describe("nextAscendSpriteIndex", () => {
+  // TODO: PICK UP HERE.
+});
