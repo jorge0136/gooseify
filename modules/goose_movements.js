@@ -35,8 +35,9 @@ function randomizeStationaryAnimation(step, stationarystep) {
   if(stationarystep <= 0) {
     stationarystep = Math.floor(Math.random() * stationaryPauseLength) + stationaryPauseLength;
     step = Math.floor(Math.random() * 100000);
+  } else {
+    stationarystep--;
   }
-  stationarystep--;
   return [ step, stationarystep ];
 }
 

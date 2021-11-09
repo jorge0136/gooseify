@@ -70,7 +70,7 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
 
     resize();
     _goose.x = Math.floor(_bounds.width * 0.3);
-    _goose.y = 0;
+    _goose.y = 1;
     setInterval(resize, 200);
 
     setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
@@ -116,8 +116,7 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
 
     let oldX = goose.x;
     let oldY = goose.y;
-    let gooseSpriteFrameCoordinates = gooseSpriteCoordinates[currentSpriteIndex];
-    const [ ,, spriteFrameWidth, spriteFrameHeight ] = gooseSpriteFrameCoordinates;
+    const [ ,, spriteFrameWidth, spriteFrameHeight ] = gooseSpriteCoordinates[currentSpriteIndex];
 
     const gooseAtBottom =  (goose.y + 2 > bounds.height);
 
@@ -158,14 +157,14 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
       ascend.height--;
       return;
 
-    } else if (stationary) {
+    } else if(stationary) {
       currentSpriteIndex = nextStationarySpriteIndex(stationarySpriteIndexes, step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
       [ step, stationaryStep ] = randomizeStationaryAnimation(step, stationaryStep);
       return;
 
-    } else if (descending) {
+    } else if(descending) {
       currentSpriteIndex = nextDescendSpriteIndex(descendSpriteIndexes[direction], step);
       goose = draw(goose, gooseSpriteCoordinates[currentSpriteIndex]);
 
