@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const html = fs.readFileSync(path.resolve(__dirname, "../example_html/example.html"), "utf8");
+const html = fs.readFileSync(path.resolve(__dirname, "../example_html/simple.html"), "utf8");
 
 jest
   .dontMock("fs");
