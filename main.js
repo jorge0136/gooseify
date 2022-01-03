@@ -35,9 +35,9 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
   "use strict";
   /* eslint-env browser */
 
+  const UPDATE_INTERVAL = 30;
   const MOVEMENT_SPEED = 5;
   const jumpHeight = 11;
-  const UPDATE_INTERVAL = 30;
 
   let _goose = {
     x: 0,
