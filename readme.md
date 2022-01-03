@@ -36,7 +36,3 @@ Issues/ pull requests welcome. Please use included `.eslintrc.js` if submitting 
 
 - Inspired by [catify.js](https://github.com/yobert/catify)
 - Inspired by [Sonicfan32](https://www.spriters-resource.com/custom_edited/untitledgoosegamecustoms/sheet/121990/).
-
-## Licensing
-
-"The code in this project is licensed under MIT license."
