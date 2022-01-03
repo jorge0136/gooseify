@@ -18,8 +18,8 @@ Yarn is used to manage testing dependencies. The library itself has no dependenc
 contained in `/modules`.
 
 ```shell
-yarn install
-yarn test
+  $ yarn install
+  $ yarn test
 ```
 
 ## Features
