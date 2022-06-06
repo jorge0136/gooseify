@@ -12,6 +12,8 @@ gooseify.js is a simple javascript module that can be loaded on most any webpage
 The heart of gooseify is javascript contained in [main.js](/main.js), whose dependencies live in the [/modules](/modules) folder.
 Include that javscript in your page and call `gooseify();` onload. An example can be found [here](/example_html/lisp_quote.html).
 
+Some text is required on your page for the goose to stand on.
+
 ## Features
 
 - Animated goose that drops into the webpage on load.
