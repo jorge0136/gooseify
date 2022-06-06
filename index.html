@@ -1,52 +1,44 @@
 <html>
+  <head>
+    <script type="module" src="./main.js"></script>
+    <style>
 
-<head>
-  <script type="module" src="./main.js"></script>
-  <style>
+      body {
+        padding: 0px;
+        margin: 0px;
+        background-color:rgba(22, 100, 129, 0.496)
+      }
+      .title-container {
+        background-image: linear-gradient(120deg, #155799, #159957);
+        padding: 5px;
+      }
 
-    blockquote {
-      margin: 0;
-      width:auto;
-      display:table
-    }
+      h1 {
+        padding: 5px;
+      }
 
-    blockquote p {
-        padding: 35px;
-        background: rgb(162, 210, 250);
-        border-radius: 5px;
-    }
+      h1, h3 {
+        text-align: center;
+        color: white;
+      }
 
-    figcaption {
-      padding: 10px;
-    }
-
-    button {
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: inline-block;
-      padding: 8px 16px;
-      transition: color 0.2s;
-    }
-  </style>
-</head>
+      p {
+        padding-left: 10px;
+      }
+    </style>
+  </head>
 
   <body onload="gooseify();">
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <figure>
-      <blockquote cite="http://www-formal.stanford.edu/jmc/history/lisp/node3.html">
-          <p>Another way to show that Lisp was neater than Turing machines was<br/>
-            to write a universal Lisp function and show that it is briefer and more<br/>
-             comprehensible than the description of a universal Turing machine.</p>
-      </blockquote>
-      <figcaption>  —John McCarthy, <cite> History of Lisp</cite></figcaption>
-      <a href="https://github.com/jorge0136/gooseify">
-        <button>See gooseify on github</button>
-      </a>
-    </figure>
+    <div class="title-container">
+      <a href="https://github.com/jorge0136/gooseify"><h1>gooseify.js</h1></a>
+      <h3>Add a goose to any webpage</h3>
+    </div>
+    <br>
+    <p>
+      With some simple javascript you too can have a goose waddle around your webpage.
+    </p>
+    <p>
+      To try it out, use the arrow keys!
+    </p>
   </body>
 </html>
