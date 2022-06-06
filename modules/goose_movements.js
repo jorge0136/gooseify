@@ -1,3 +1,6 @@
+function initialGooseXPosition(x_bounds_width) {
+  return Math.floor(x_bounds_width * 0.3);
+}
 
 function determineDirection(x, oldX) {
   return (x > oldX) ? 0 : 1;
@@ -79,6 +82,7 @@ function handleYOutOfBounds(y, boundsHeight, spriteFrameH) {
 }
 
 export {
+  initialGooseXPosition,
   determineDirection,
   leftArrowTransform,
   rightArrowTransform,

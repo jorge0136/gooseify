@@ -16,6 +16,7 @@ import {
 } from "./modules/goose_sprite_coordinates.js";
 
 import {
+  initialGooseXPosition,
   determineDirection,
   leftArrowTransform,
   rightArrowTransform,
@@ -69,7 +70,7 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
     _goose = styleGoose(_goose);
 
     resize();
-    _goose.x = Math.floor(_bounds.width * 0.3);
+    _goose.x = initialGooseXPosition(_bounds.width);
     _goose.y = 1;
     setInterval(resize, 200);
 
