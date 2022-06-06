@@ -5,7 +5,7 @@ module.exports = {
     "jest/globals": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:jest/recommended"],
   "parserOptions": {
     "ecmaVersion": 13,
     "sourceType": "module"
