@@ -6,18 +6,21 @@
 
 gooseify.js is a javascript module that can be loaded on most any webpage.
 
-* [See it in action here.](jorge0136.github.io/gooseify/index)
-* [See how to gooseify a webpage here.](/example_html/falling.html)
+* [See it in action here.](https://jorge0136.github.io/gooseify/index)
+* [See how to use gooseify on a webpage here.](/example_html/lisp_quote.html)
 
 ### Initial Configuration
 
-There are some initial constants for things like animation speed and jump height in
-`main.js`.
+The heart of gooseify is javascript contained in main.js, whose depedencies live in `/modules` folder.
+Include that javscript in your page and call `gooseify();` onload. An example can be found [here](/example_html/falling.html).
+
+If you want to change the configuration of the animation see `main.js`, there is constants that can
+be updated there.
 
 ### Building & Testing
 
 Yarn is used to manage testing dependencies. The library itself has no dependencies aside from those
-contained in `/modules`.
+contained in `main.js`, `/modules`.
 
 ```shell
   $ yarn install
