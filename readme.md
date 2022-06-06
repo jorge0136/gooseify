@@ -4,8 +4,10 @@
 
 ## Installing / Getting started
 
-gooseify.js is a javascript module that can be loaded on most any webpage. See
-[an example of how to gooseify a webpage here.](/example_html/falling.html)
+gooseify.js is a javascript module that can be loaded on most any webpage.
+
+* [See it in action here.](jorge0136.github.io/gooseify/index)
+* [See how to gooseify a webpage here.](/example_html/falling.html)
 
 ### Initial Configuration
 
