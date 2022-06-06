@@ -32,6 +32,8 @@ import {
 
 import { styleGoose, draw } from "./modules/goose_sprite.js";
 
+// TODO: Decompose this arrow function into a namespace, distinct functions rather than being a big
+// bag of self execution on `window`.
 (() => {
   "use strict";
   /* eslint-env browser */

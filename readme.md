@@ -14,6 +14,8 @@ Include that javscript in your page and call `gooseify();` onload. An example ca
 
 Some text is required on your page for the goose to stand on.
 
+Note you only need yarn to do any building if you are developing gooseify.
+
 ## Features
 
 - Animated goose that drops into the webpage on load.
