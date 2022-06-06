@@ -1,6 +1,6 @@
 # gooseify.js
 
-> Put a goose on your webpage.
+> Put a goose on your webpage with simple javascript.
 
 ## Installing / Getting started
 

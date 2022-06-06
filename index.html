@@ -1,0 +1,52 @@
+<html>
+
+<head>
+  <script type="module" src="./main.js"></script>
+  <style>
+
+    blockquote {
+      margin: 0;
+      width:auto;
+      display:table
+    }
+
+    blockquote p {
+        padding: 35px;
+        background: rgb(162, 210, 250);
+        border-radius: 5px;
+    }
+
+    figcaption {
+      padding: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-block;
+      padding: 8px 16px;
+      transition: color 0.2s;
+    }
+  </style>
+</head>
+
+  <body onload="gooseify();">
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <figure>
+      <blockquote cite="http://www-formal.stanford.edu/jmc/history/lisp/node3.html">
+          <p>Another way to show that Lisp was neater than Turing machines was<br/>
+            to write a universal Lisp function and show that it is briefer and more<br/>
+             comprehensible than the description of a universal Turing machine.</p>
+      </blockquote>
+      <figcaption>  —John McCarthy, <cite> History of Lisp</cite></figcaption>
+      <a href="https://github.com/jorge0136/gooseify">
+        <button>See gooseify on github</button>
+      </a>
+    </figure>
+  </body>
+</html>
