@@ -2,32 +2,38 @@
 
 > Put a goose on your webpage with simple javascript.
 
-## Installing / Getting started
+## Getting started
 
-gooseify.js is a javascript module that can be loaded on most any webpage.
+gooseify.js is a simple javascript module that can be loaded on most any webpage.
 
 * [See it in action here.](https://jorge0136.github.io/gooseify/index)
 * [See how to use gooseify on a webpage here.](/example_html/lisp_quote.html)
 
-### Initial Install
-
 The heart of gooseify is javascript contained in [main.js](/main.js), whose dependencies live in the [/modules](/modules) folder.
-Include that javscript in your page and call `gooseify();` onload. An example can be found [here](/example_html/falling.html).
+Include that javscript in your page and call `gooseify();` onload. An example can be found [here](/example_html/lisp_quote.html).
 
-### Animation Configuration
+## Features
 
-Editable attributes in [main.js](/main.js) include:
+- Animated goose that drops into the webpage on load.
+- Control goose with arrow keys.
+- Different poses while at rest.
+- Maneuver over the webpage with the arrow keys.
+- Configurable CSS transforms provides a goose of any color or style you please.
+
+## Animation Configuration
+
+Editable animation attributes in [main.js](/main.js) include:
 
 * Movement speed
 * Jump height
 * Animation update interval
 
-CSS effects can be configured within [/modules/goose_sprite.js](/modules/goose_sprite.js):
+Editable CSS effects configurable within [/modules/goose_sprite.js](/modules/goose_sprite.js):
 
 * Goose image size scaling
-* Goose image color filters
+* Goose image color / CSS filters
 
-### Building & Testing
+## Building & Testing
 
 Yarn is used to manage testing dependencies. The library itself has no dependencies aside from those
 contained in [main.js](/main.js), [/modules](/modules).
@@ -36,12 +42,6 @@ contained in [main.js](/main.js), [/modules](/modules).
   $ yarn install
   $ yarn test
 ```
-
-## Features
-
-- Animated goose that drops into the webpage on load.
-- Different poses while at rest.
-- Maneuver over the webpage with the arrow keys.
 
 ## Contributing
 
