@@ -6,15 +6,16 @@
       body {
         padding: 0px;
         margin: 0px;
-        background-color:rgba(22, 100, 129, 0.496)
+        background-color:rgba(139, 171, 181, 0.496);
+        font-family: Monaco,Courier,monospace;
       }
+
       .title-container {
         background-image: linear-gradient(120deg, #155799, #159957);
-        padding: 5px;
       }
 
       h1 {
-        padding: 5px;
+        padding: 25px;
       }
 
       h1, h3 {
@@ -24,6 +25,42 @@
 
       p {
         padding-left: 10px;
+        font-size: 16pt;
+        color: rgb(86, 86, 86);
+        text-align: center;
+        margin-left: 25%;
+        margin-right: 25%;
+      }
+
+      .button-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        background-color:rgba(139, 171, 181, 0.496);
+        padding: 0px;
+        margin: 0px;
+      }
+
+      button {
+        margin: 10px;
+        padding: 8px;
+        border: 1px;
+        background-color: #6d55cb;
+        color: white;
+        transition-duration: 0.4s;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #473490;
+      }
+
+      a {
+        color: #6d55cb
+      }
+
+      .button-link {
+
       }
     </style>
   </head>
@@ -32,8 +69,18 @@
     <div class="title-container">
       <a href="https://github.com/jorge0136/gooseify"><h1>gooseify.js</h1></a>
       <h3>Add a goose to any webpage</h3>
+      <div class="button-container">
+        <a href="https://github.com/jorge0136/gooseify#getting-started">
+          <button class="button-link">Getting Started</button>
+        </a>
+        <a href="https://github.com/jorge0136/gooseify#features">
+          <button class="button-link">Docs</button>
+        </a>
+        <a href="https://github.com/jorge0136/gooseify#animation-configuration">
+          <button class="button-link">Config</button>
+        </a>
+      </div>
     </div>
-    <br>
     <p>
       With some simple javascript you too can have a goose waddle around your webpage.
     </p>

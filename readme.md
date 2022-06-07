@@ -2,7 +2,7 @@
 
 > Put a goose on your webpage with simple javascript.
 
-## Getting started
+## Getting Started
 
 gooseify.js is a simple javascript module that can be loaded on most any webpage.
 
