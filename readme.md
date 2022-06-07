@@ -4,15 +4,14 @@
 
 ## Getting Started
 
-gooseify.js is a simple javascript module that can be loaded on most any webpage.
+gooseify.js is a simple javascript module that can be loaded on any webpage with enough text for the
+goose to stand on.
 
 * [See it in action here.](https://jorge0136.github.io/gooseify/index)
 * [See how to use gooseify on a webpage here.](/example_html/lisp_quote.html)
 
 The heart of gooseify is javascript contained in [main.js](/main.js), whose dependencies live in the [/modules](/modules) folder.
 Include that javscript in your page and call `gooseify();` onload. An example can be found [here](/example_html/lisp_quote.html).
-
-Some text is required on your page for the goose to stand on.
 
 Note you only need yarn to do any building if you are developing gooseify.
 
