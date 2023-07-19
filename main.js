@@ -40,7 +40,11 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
 
   const UPDATE_INTERVAL = 30;
   const MOVEMENT_SPEED = 5;
-  const jumpHeight = 11;
+  const JUMP_HEIGHT = 11;
+  const LEFT_ARROW_KEY_CODE = 37;
+  const UP_ARROW_KEY_CODE = 38;
+  const RIGHT_ARROW_KEY_CODE = 39;
+  const DOWN_ARROW_KEY_CODE = 40;
 
   let _goose = {
     x: 0,
@@ -74,9 +78,12 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
     resize();
     _goose.x = initialGooseXPosition(_bounds.width);
     _goose.y = 1;
-    setInterval(resize, 200);
 
-    setInterval(() => { update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose); }, UPDATE_INTERVAL);
+    setInterval(resize, 200);
+    setInterval(
+      () => {  update(_bounds, _keyHeld, _DOMObjectsDimensions, _goose);  },
+      UPDATE_INTERVAL
+    );
 
     _goose = draw(_goose, gooseSpriteCoordinates[0]);
     document.body.appendChild(_goose);
@@ -90,7 +97,7 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
       let k = getKey(e);
       _keyHeld[k] = true;
 
-      if(k >= 37 && k <= 40) {
+      if(k >= LEFT_ARROW_KEY_CODE && k <= DOWN_ARROW_KEY_CODE) {
         e.preventDefault();
       }
     });
@@ -101,7 +108,7 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
       let k = getKey(e);
       _keyHeld[k] = false;
 
-      if(k >= 37 && k <= 40) {
+      if(k >= LEFT_ARROW_KEY_CODE && k <= DOWN_ARROW_KEY_CODE) {
         e.preventDefault();
       }
     });
@@ -134,15 +141,15 @@ import { styleGoose, draw } from "./modules/goose_sprite.js";
       MOVEMENT_SPEED
     );
 
-    if(keyHeld[37]) {
+    if(keyHeld[LEFT_ARROW_KEY_CODE]) {
       goose.x = leftArrowTransform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
-    } else if(keyHeld[39]) {
+    } else if(keyHeld[RIGHT_ARROW_KEY_CODE]) {
       goose.x = rightArrowTransform(goose.x, MOVEMENT_SPEED, spriteFrameWidth, bounds.width);
     }
 
-    if(keyHeld[38] && !ascend.active() && sitting) {
-      ascend = upArrowTransform(ascend, jumpHeight);
-    } else if(keyHeld[40] || (!ascend.active() && !sitting && !gooseAtBottom)) {
+    if(keyHeld[UP_ARROW_KEY_CODE] && !ascend.active() && sitting) {
+      ascend = upArrowTransform(ascend, JUMP_HEIGHT);
+    } else if(keyHeld[DOWN_ARROW_KEY_CODE] || (!ascend.active() && !sitting && !gooseAtBottom)) {
       goose.y = downArrowTransform(goose.y, MOVEMENT_SPEED);
     }
 
